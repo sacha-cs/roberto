@@ -1,1 +1,7 @@
 Repo for Roberto
+
+Please have Roberto's address set as bash variable $pimac. Put this line in your .cshrc (or equivilent):
+
+setenv pimac 80:1f:02:af:31:1a
+
+

@@ -1,3 +1,3 @@
-scp -l 256 pi@129.31.190.166:~/BrickPi/logfile .
+wget -O logfile http://`./get-ip $pimac`:8080/
 python plotlog.py
 
