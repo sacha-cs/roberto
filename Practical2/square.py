@@ -1,21 +1,14 @@
-import robot_utils
+import robot_utils as ru
 
-robot_utils.setupInterface()
+ru.setupInterface()
 
-robot_utils.move(40)
-robot_utils.waitUntilStopped()
-robot_utils.turnLeft(90)
-robot_utils.waitUntilStopped()
-robot_utils.move(40)
-robot_utils.waitUntilStopped()
-robot_utils.turnLeft(90)
-robot_utils.waitUntilStopped()
-robot_utils.move(40)
-robot_utils.waitUntilStopped()
-robot_utils.turnLeft(90)
-robot_utils.waitUntilStopped()
-robot_utils.move(40)
-robot_utils.waitUntilStopped()
-robot_utils.turnLeft(90)
+ru.move(40)
+ru.turnLeft(90)
+ru.move(40)
+ru.turnLeft(90)
+ru.move(40)
+ru.turnLeft(90)
+ru.move(40)
+ru.turnLeft(90)
 
-robot_utils.done()
+ru.done()

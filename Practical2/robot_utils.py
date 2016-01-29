@@ -25,18 +25,21 @@ def setupInterface():
 	interface.setMotorAngleControllerParameters(motors[1],motorParams)
 
 RADIANS_40CM = 14.67
-def move(distance):
+def move(distance, verbose=False):
 	radians = distance / 40.0 * RADIANS_40CM
 	interface.increaseMotorAngleReferences(motors,[radians,radians])
+	waitUntilStopped(verbose)
 
 RADIANS_90DEG = 4.40
-def turnLeft(deg):
+def turnLeft(deg, verbose=False):
 	radians = deg/90 * RADIANS_90DEG
 	interface.increaseMotorAngleReferences(motors,[radians,-radians])
+	waitUntilStopped(verbose)
 
-def turnRight(deg):
+def turnRight(deg, verbose=False):
 	radians = deg/90 * RADIANS_90DEG
 	interface.increaseMotorAngleReferences(motors,[-radians,radians])
+	waitUntilStopped(verbose)
 
 def waitUntilStopped(verbose=False):
 	while not interface.motorAngleReferencesReached(motors):
@@ -48,7 +51,7 @@ def waitUntilStopped(verbose=False):
 
 	if(verbose):
 		print("Destination Reached!")
-	time.sleep(2)
+	time.sleep(1)
 
 
 def done():
