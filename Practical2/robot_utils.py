@@ -32,12 +32,12 @@ def move(distance, verbose=False):
 
 RADIANS_90DEG = 4.40
 def turnLeft(deg, verbose=False):
-	radians = deg/90 * RADIANS_90DEG
+	radians = deg/90.0 * RADIANS_90DEG
 	interface.increaseMotorAngleReferences(motors,[radians,-radians])
 	waitUntilStopped(verbose)
 
 def turnRight(deg, verbose=False):
-	radians = deg/90 * RADIANS_90DEG
+	radians = deg/90.0 * RADIANS_90DEG
 	interface.increaseMotorAngleReferences(motors,[-radians,radians])
 	waitUntilStopped(verbose)
 
