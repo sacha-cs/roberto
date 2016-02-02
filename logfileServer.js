@@ -5,6 +5,6 @@ port = 8080;
 
 http.createServer(function(req, res) {
     res.writeHead(200);
-    fs.createReadStream('../BrickPi/logfile').pipe(res);
+    fs.createReadStream('Practical2/resultsSquare.txt').pipe(res);
 }).listen(port);
 
