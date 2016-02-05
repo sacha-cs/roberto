@@ -1,13 +1,14 @@
 import robot_utils as ru
 
-ru.setupInterface()
+ru.start()
 
-ru.move(40)
+ru.move(20)
 ru.turnLeft(90)
-ru.move(40)
+ru.move(20)
 ru.turnLeft(90)
-ru.move(40)
+ru.move(20)
 ru.turnLeft(90)
-ru.move(40)
+ru.move(20)
+ru.turnLeft(90)
 
 ru.done()

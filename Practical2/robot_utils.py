@@ -4,6 +4,21 @@ import time
 interface = brickpi.Interface()
 motors = [0,1]
 
+def median(l):
+    buckets = {}
+    for num in l:
+        if(num in buckets):
+            buckets[num]+=1
+        else:
+            buckets[num] = 1
+    highest = l[0]
+    highval = 0
+    for num in buckets.keys():
+        if(buckets[num] > highval):
+            highval = buckets[num]
+            highest = num
+    return num
+
 def start():
     interface.initialize()
     setupMotors()
@@ -12,7 +27,7 @@ def start():
 def setupSensors():
     interface.sensorEnable(0, brickpi.SensorType.SENSOR_TOUCH)
     interface.sensorEnable(1, brickpi.SensorType.SENSOR_TOUCH)    
-    
+    interface.sensorEnable(2, brickpi.SensorType.SENSOR_ULTRASONIC)
 
 def setupMotors():
     interface.motorEnable(motors[0])
@@ -39,7 +54,7 @@ def move(distance, verbose=False, wait=True):
     if (wait):
         waitUntilStopped(verbose)
 
-RADIANS_90DEG = 4.72
+RADIANS_90DEG = 4.55
 def turnLeft(deg, verbose=False, wait=True):
     radians = deg/90.0 * RADIANS_90DEG
     interface.increaseMotorAngleReferences(motors,[radians,-radians])
@@ -75,6 +90,14 @@ def getTouchSensor(port):
         return result[0]
     print "Error: couldn't get touch sensor result for port " + str(port)
     return False
+
+#TODO: multithread this to get a median value of the last n results
+def getUltrasonicSensor(port):
+    usReading = interface.getSensorValue(port)
+    if usReading:
+        return usReading[0]
+    print "Couldn't get reading from US sensor"
+    return 255
 
 def done():
     interface.terminate()
