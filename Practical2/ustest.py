@@ -2,7 +2,7 @@ import robot_utils as ru
 from robot_utils import median
 import time
 
-ru.start()
+ru.start(ru.CONTROL_VELOCITY)
 
 readings = []
 
