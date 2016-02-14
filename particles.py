@@ -7,9 +7,9 @@ NUMBER_OF_PARTICLES = 100
 
 # Parameters for random variables
 MEAN = 0
-SIGMA_E = 0.5
-SIGMA_F = 0.1
-SIGMA_G = 0.1
+SIGMA_E = 0.1
+SIGMA_F = 0.4
+SIGMA_G = 1
 
 # Offset for drawing particles and path
 OFFSET = 100  # pixels
@@ -22,7 +22,8 @@ y = 0
 theta = 0
 
 # Initialise particles
-particles = [(0,0,0)]*NUMBER_OF_PARTICLES
+particles = [(0,0,0)] * NUMBER_OF_PARTICLES
+
 
 def getNoiseTermE():
     return random.gauss(MEAN, SIGMA_E)
@@ -40,8 +41,8 @@ def drawLine(xstart, ystart, x, y):
     print 'drawLine:' + str((OFFSET + SCALE_FACTOR * xstart, OFFSET + SCALE_FACTOR * ystart, OFFSET + SCALE_FACTOR * x, OFFSET + SCALE_FACTOR * y))
 
 def updateAfterStraightLine(x, y, theta, distance):
-    xNew = x + ( distance + getNoiseTermE() ) * math.cos(theta)
-    yNew = y + ( distance + getNoiseTermE() ) * math.sin(theta)
+    xNew = x + ( distance + getNoiseTermE() ) * math.cos(math.radians(theta))
+    yNew = y + ( distance + getNoiseTermE() ) * math.sin(math.radians(theta))
     thetaNew = theta + getNoiseTermF()
     return (xNew, yNew, thetaNew)
 
@@ -51,7 +52,7 @@ def updateAfterRotation(x, y, theta, alpha):
     thetaNew = theta + alpha + getNoiseTermG()
     return (xNew, yNew, thetaNew)
 
-theta_change = 90  # turn 90 degrees each time
+alpha = 90  # turn 90 degrees each time
 for i in range(4):
 
    if (i == 0):
@@ -77,14 +78,13 @@ for i in range(4):
        y += y_change * 10
 
        # Update particles
-       particles = [updateAfterStraightLine(x0,y0,theta0,10*(x_change+y_change)) for (x0,y0,theta0) in particles]
+       particles = [updateAfterStraightLine(x0,y0,theta0,10) for (x0,y0,theta0) in particles]
 
        # Draw lines and particles
        drawLine(xstart, ystart, x, y)
        drawParticles(particles)
 
-   ru.turnLeft(theta_change)
-   theta += theta_change  # turned 90 degrees
-   particles = [updateAfterRotation(x0,y0,theta0,theta_change) for (x0,y0,theta0) in particles]  # update particles
+   ru.turnRight(alpha)
+   particles = [updateAfterRotation(x0,y0,theta0,alpha) for (x0,y0,theta0) in particles]  # update particles
 
 ru.done()
