@@ -10,10 +10,14 @@ SIGMA_X = 10
 SIGMA_Y = 10
 SIGMA_THETA = 1
 
+# Offset for drawing particles and path
+OFFSET = 50  # pixels
+
 ru.start()
 
-x = 50
-y = 50
+# Initialise coordinates
+x = OFFSET
+y = OFFSET
 theta = 0
 
 particles = [(x,y,0)]*NUMBER_OF_PARTICLES
@@ -30,6 +34,13 @@ def getRandomTheta(theta):
     dtheta = random.gauss(MEAN, SIGMA_THETA)
     return theta + dtheta
 
+def drawParticles(particles):
+    print 'drawParticles:' + str([(OFFSET + SCALE_FACTOR * x, OFFSET + SCALE_FACTOR * y, theta) for (x,y,theta) in particles]) 
+
+def drawLine(xstart, ystart, x, y):
+    xstart, ystart, x, y = line
+    print 'drawLine:' + str((OFFSET + xstart, OFFSET + ystart, OFFSET + x, OFFSET + y))
+
 for i in range(4):
 
    if (i == 0):
@@ -45,16 +56,24 @@ for i in range(4):
        x_change = 0
        y_change = -1
    for _ in xrange(4):
+       # Make Roberto move 10cm
        ru.move(10)
+
+       # Update position
        xstart = x
        ystart = y
-       x += SCALE_FACTOR * x_change * 10
-       y += SCALE_FACTOR * y_change * 10
-       print "drawLine:" + str((xstart,ystart,x,y))  
+       x += x_change * 10
+       y += y_change * 10
+
+       # Update particles
+       particles = [(getRandomX(x0), getRandomY(y0), getRandomTheta(theta0)) for (x0,y0,theta0) in particles]
+
+       # Draw lines and particles
+       drawLine(xstart, ystart, x, y)
+       drawParticles(particles)
        
-       # Generate particles
-       particles = [(getRandomX(x0) + SCALE_FACTOR * x_change*10, getRandomY(y0) + SCALE_FACTOR*y_change*10, getRandomTheta(theta0) + theta) for (x0,y0,theta0) in particles]
-       print 'drawParticles:' + str(particles)
+
+
 
    ru.turnLeft(90)
 
