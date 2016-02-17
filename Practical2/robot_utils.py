@@ -70,13 +70,13 @@ def move(distance, verbose=False, wait=True):
         waitUntilStopped(verbose)
 
 RADIANS_90DEG = 3.655
-def turnLeft(deg, verbose=False, wait=True):
+def turnRight(deg, verbose=False, wait=True):
     radians = deg/90.0 * RADIANS_90DEG
     interface.increaseMotorAngleReferences(motors,[radians,-radians])
     if wait:
         waitUntilStopped(verbose)
 
-def turnRight(deg, verbose=False, wait=True):
+def turnLeft(deg, verbose=False, wait=True):
     radians = deg/90.0 * RADIANS_90DEG
     interface.increaseMotorAngleReferences(motors,[-radians,radians])
     if wait:

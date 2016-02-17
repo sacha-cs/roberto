@@ -1,28 +1,40 @@
 import math
 import Practical2.robot_utils as ru
+from matrixUtils import matmult, transpose, rotationMatrix
 
 def getWaypoint():
     return map(float, raw_input().strip().split(' '))
 
 def receiveWaypoints():
-    position = (0, 0)
+    position = [[0],[0]]
+    rotationMat = [[1,0],[0,1]]
     while(True):
         waypoint = getWaypoint()
+        print "world waypoint: ", waypoint
+        waypoint = matmult(rotationMat, transpose(waypoint))
+        print "waypoint after rotation: ", waypoint
         rotation = angleToPoint(position, waypoint)
         distance = euclideanDistance(position, waypoint)
         print 'rotation', rotation
         print 'distance', distance
-        travelToWaypoint(rotation, distance)
+        #travelToWaypoint(rotation, distance)
         position = waypoint
+        print 'new position: ', position
+        rotationMat = matmult(rotationMatrix(rotation), rotationMat)
+        print 'rotationMat: ', rotationMat
 
 def euclideanDistance(p1, p2):
-    x1, y1 = p1
-    x2, y2 = p2
+    x1 = p1[0][0]
+    y1 = p1[1][0]
+    x2 = p2[0][0]
+    y2 = p2[1][0]
     return math.sqrt((x1-x2)**2 + (y1-y2)**2)
 
 def angleToPoint(original, target):
-    x1, y1 = original
-    x2, y2 = target
+    x1 = original[0][0]
+    y1 = original[1][0]
+    x2 = target[0][0]
+    y2 = target[1][0]
     dx = x2 - x1  # targetX - originalX
     dy = y2 - y1  # targetY - originalY
     if (dx > 0 and dy > 0):    # Q1
