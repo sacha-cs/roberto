@@ -1,12 +1,13 @@
 import math
 import Practical2.robot_utils as ru
-from matrixUtils import matmult, transpose, rotationMatrix
+import particles as p
 
 def getWaypoint():
     return map(float, raw_input().strip().split(' '))
 
 def receiveWaypoints():
-    # [x, y, theta]
+    # [x, y, theta] 
+    particles = [(0,0,0)] * p.NUMBER_OF_PARTICLES
     position = [0,0,0]
     while(True):
         waypoint = getWaypoint()
@@ -16,7 +17,10 @@ def receiveWaypoints():
         print 'rotation', rotation
         print 'distance', distance
         travelToWaypoint(rotation, distance)
-        position = [waypoint[0], waypoint[1], position[2]+rotation]
+        particles = [p.updateAfterRotation(x0,y0,theta0,rotation) for (x0,y0,theta0) in particles]
+        particles = [p.updateAfterStraightLine(x0,y0,theta0,distance) for (x0,y0,theta0) in particles]
+        position = p.meanParticles(particles)
+        position = [waypoint[0], waypoint[1], checkAngle(position[2])]
         print 'new position: ', position
 
 def euclideanDistance(p1, p2):
@@ -31,6 +35,9 @@ def norm(p):
     y = p[1]
     return math.sqrt(x**2 + y**2)
 
+def checkAngle(a):
+    return a % 360
+
 def angleToPoint(original, target):
     x1 = original[0]
     y1 = original[1]
@@ -42,9 +49,10 @@ def angleToPoint(original, target):
     Vy = y2 - y1 
     Ux = math.cos(t1) # U vector
     Uy = math.sin(t1)
-    a = (Ux * Vx + Uy * Vy) / (norm([Ux, Uy]) * norm([Vx, Vy]))
-    a = math.acos(a)
-    return math.degrees(a)
+    #a = (Ux * Vx + Uy * Vy) / (norm([Vx, Vy]))
+    #a = math.acos(a)
+    a = math.atan2(Ux,Uy) - math.atan2(Vx,Vy)
+    return checkAngle(math.degrees(a))
 
 def travelToWaypoint(rotation, distance):
     ru.turnLeft(rotation)
