@@ -9,7 +9,7 @@ NUMBER_OF_PARTICLES = 100
 # Parameters for random variables
 MEAN = 0
 SIGMA_E = 0.07
-SIGMA_F = 0.1
+SIGMA_F = 0.3
 SIGMA_G = 0.4
 
 # Offset for drawing particles and path
@@ -60,6 +60,9 @@ def meanParticles(particles):
 
 
 def drawSquare():
+    global x
+    global y
+    global particles
     ru.start()
 
     alpha = 90  # turn 90 degrees each time
@@ -119,4 +122,5 @@ def travelInStraightLine():
     ru.done()
 
 if __name__ == '__main__':
-    travelInStraightLine()
+    drawSquare()
+    #travelInStraightLine()
