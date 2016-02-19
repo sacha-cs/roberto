@@ -6,7 +6,7 @@ def getWaypoint():
     return map(float, raw_input().strip().split(' '))
 
 def receiveWaypoints():
-    # [x, y, theta] 
+    # [x, y, theta]
     particles = [(0,0,0)] * p.NUMBER_OF_PARTICLES
     position = [0,0,0]
     while(True):
@@ -45,8 +45,8 @@ def angleToPoint(original, target):
     t1 = math.radians(original[2])
     x2 = target[0]
     y2 = target[1]
-    Vx = x2 - x1 # V vector 
-    Vy = y2 - y1 
+    Vx = x2 - x1 # V vector
+    Vy = y2 - y1
     Ux = math.cos(t1) # U vector
     Uy = math.sin(t1)
     #a = (Ux * Vx + Uy * Vy) / (norm([Vx, Vy]))
@@ -55,10 +55,12 @@ def angleToPoint(original, target):
     return checkAngle(math.degrees(a))
 
 def travelToWaypoint(rotation, distance):
-    ru.turnLeft(rotation)
+    if (rotation > 180):
+        ru.turnRight(360 - rotation)
+    else:
+        ru.turnLeft(rotation)
     ru.move(distance * 100)  # convert m to cm
 
 if __name__ == '__main__':
     ru.start()
     receiveWaypoints()
-

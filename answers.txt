@@ -1,0 +1,27 @@
+Question 1:
+Min = 22cm
+Max = 238cm
+
+Question 2:
+15 degrees from perpendicular line to the wall
+
+Question 3:
++-------------------+
+| Actual | Measured |
++-------------------+
+| 20 cm  | 22 cm    |
+| 40 cm  | 41 cm    |
+| 60 cm  | 61 cm    |
+| 80 cm  | 82 cm    |
+| 100 cm | 105 cm   |
++-------------------+
+
+Question 4:
+40 cm readings: 41, 41, 42, 42, 42, 42, 42, 42, 42, 42
+100 cm readings: 102, 102, 102, 102, 102, 102, 102, 102, 102, 102
+
+We observed a similar level of scatter for both cases
+
+Question 5:
+From our experiments, we can estimate the proportion of garbage readings to be
+15-20% approximately.
