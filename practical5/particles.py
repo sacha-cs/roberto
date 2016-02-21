@@ -16,7 +16,7 @@ def calcTheta():
     return random.randint(0,360)
 
 class Particles:
-    def __init__(self, num=1, x=0, y=0, theta=0, sigma_e=0.07, \
+    def __init__(self, num=100, x=0, y=0, theta=0, sigma_e=0.07, \
                     sigma_f=0.2, sigma_g=0.1):
         self.num_particles = num
         self.sigma_e = sigma_e

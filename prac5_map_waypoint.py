@@ -28,9 +28,10 @@ def travelToWaypoint(rotation, distance):
         ru.turnRight(360 - rotation)
     else:
         ru.turnLeft(rotation)
-    ru.move(distance * 100)  # convert m to cm
+    ru.move(distance)
 
 if __name__ == '__main__':
+    ru.start()
     canvas = Canvas()
 
     map = Map()
@@ -44,14 +45,15 @@ if __name__ == '__main__':
     canvas.draw_particles(particles)
 
     for waypoint in WAYPOINTS[1:]:
-        time.sleep(2)
         rotation = angleToPoint(position, waypoint)
         distance = euclideanDistance(position, waypoint)
 
-        # travelToWaypoint(rotation, distance)
-
-        particles.update_after_straight_line(distance)
+        travelToWaypoint(rotation, distance)
         particles.update_after_rotation(rotation)
+        particles.update_after_straight_line(distance)
+        
         canvas.draw_particles(particles)
 
         position = particles.get_position()
+
+    ru.done()
