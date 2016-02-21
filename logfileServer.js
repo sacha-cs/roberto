@@ -5,6 +5,6 @@ port = 8080;
 
 http.createServer(function(req, res) {
     res.writeHead(200);
-    fs.createReadStream('Practical2/followlog').pipe(res);
+    fs.createReadStream('Practical2/straightlinelog').pipe(res);
 }).listen(port);
 

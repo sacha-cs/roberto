@@ -8,13 +8,10 @@ NUMBER_OF_PARTICLES = 100
 
 # Parameters for random variables
 MEAN = 0
-#SIGMA_E = 0.07
-#SIGMA_F = 0.3
-#SIGMA_G = 0.1
+SIGMA_E = 0.07
+SIGMA_F = 0.2
+SIGMA_G = 0.1
 
-SIGMA_E = 0
-SIGMA_F = 0
-SIGMA_G = 0
 
 # Offset for drawing particles and path
 OFFSET = 100  # pixels
