@@ -11,7 +11,7 @@ def plot(data, timeCol, motorCol, refCol):
 
 data = []
 
-with open('Practical2/straightlinelog') as f:
+with open('logfile') as f:
         data = [[float(num) for num in line.strip().split('\t')] for line in f.readlines()]
 
 plot(data, 0, 1, 2)
