@@ -8,16 +8,21 @@ class Canvas:
         self.margin      = 0.05*map_size;
         self.scale       = self.canvas_size/(map_size+2*self.margin);
 
-    def drawLine(self,line):
+    def draw_line(self,line):
         x1 = self.__screenX(line[0]);
         y1 = self.__screenY(line[1]);
         x2 = self.__screenX(line[2]);
         y2 = self.__screenY(line[3]);
         print "drawLine:" + str((x1,y1,x2,y2))
 
-    def drawParticles(self,data):
+    def draw_particles(self, particles):
+        data = particles.get_particles()
         display = [(self.__screenX(d[0]),self.__screenY(d[1])) + d[2:] for d in data];
         print "drawParticles:" + str(display);
+
+    def draw_map(self, map):
+        for wall in map.get_walls():
+            self.draw_line(wall)
 
     def __screenX(self,x):
         return (x + self.margin)*self.scale

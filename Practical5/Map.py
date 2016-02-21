@@ -9,6 +9,6 @@ class Map:
     def clear(self):
         self.walls = [];
 
-    def draw(self):
-        for wall in self.walls:
-            canvas.drawLine(wall);
+    def get_walls(self):
+        return self.walls
+
