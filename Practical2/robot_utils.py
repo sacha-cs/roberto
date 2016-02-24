@@ -62,14 +62,14 @@ def setupMotors(control=CONTROL_ANGLE):
     interface.setMotorAngleControllerParameters(motors[0],motorParams)
     interface.setMotorAngleControllerParameters(motors[1],motorParams)
 
-RADIANS_40CM = 14.35
+RADIANS_40CM = 11.67
 def move(distance, verbose=False, wait=True):
     radians = distance / 40.0 * RADIANS_40CM
     interface.increaseMotorAngleReferences(motors,[radians,radians])
     if (wait):
         waitUntilStopped(verbose)
 
-RADIANS_90DEG = 4.8
+RADIANS_90DEG = 3.72
 def turnRight(deg, verbose=False, wait=True):
     radians = deg/90.0 * RADIANS_90DEG
     interface.increaseMotorAngleReferences(motors,[radians,-radians])
