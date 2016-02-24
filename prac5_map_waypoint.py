@@ -44,7 +44,9 @@ if __name__ == '__main__':
     position = particles.get_position()
     canvas.draw_particles(particles)
 
+    #TODO: Frequency of sonar measurement querying
     for waypoint in WAYPOINTS[1:]:
+        # 1 - Motion prediction
         rotation = angleToPoint(position, waypoint)
         distance = euclideanDistance(position, waypoint)
 
@@ -53,6 +55,9 @@ if __name__ == '__main__':
         particles.update_after_straight_line(distance)
         
         canvas.draw_particles(particles)
+
+        # 2 - Measurement update
+        # TODO: get ground truth value m and incidence angle
 
         position = particles.get_position()
 

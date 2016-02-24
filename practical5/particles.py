@@ -23,6 +23,8 @@ class Particles:
         self.sigma_f = sigma_f
         self.sigma_g = sigma_g
         self.MEAN = 0
+        self.SIGMA_SONAR = 3;
+        self.K = 0; #TODO
         self.particles = []
         self.__create_particles(x, y, theta)
 
@@ -66,3 +68,46 @@ class Particles:
     def get_particles(self):
         return self.particles 
 
+    def weight_update(self, z, m):
+        new_particles = [];
+        for p in self.particles:
+            new_weight = self.__calculate_likelihood(p[0], p[1], p[2], z, m)
+            new_particles.append((p[0], p[1], p[2], new_weight))
+
+        self.particles = self.__normalise_particles(new_particles)
+
+    def resample(self):
+        # Order particles by weight
+        self.particles.sort(key=lambda p:p[3])
+        # Compute cumulative weight array
+        weight_cdf = [0] * self.num_particles+1
+        cumul = 0
+        for i in xrange(1, self.num_particles):
+            cumul += self.particles[i][3]
+            weight_cdf[i] = cumul
+
+        new_particles = []
+        for _ in xrange(self.num_particles):
+            rand_num = random.uniform(0,1)
+
+            i = 0
+            curr_max = 0
+            while curr_max < rand_num:
+                curr_max = weight_cdf[i]
+                i++
+
+            new_particles.append(self.particles[i])
+
+        self.particles = new_particles
+
+    def __normalise_particles(particles):
+        sum_weights = sum([w for (_,_,_,w) in particles])
+        new_particles = []
+        for p in particles:
+            new_particles.append((p[0], p[1], p[2], p[3]/sum_weights))
+        return new_particles
+
+    def __calculate_likelihood(self, x, y, theta, z, m):
+        # Use Normal distributional model (s.d.: 2-3) to compute likelihood value (z-m)
+        likelihood = math.exp(-(z-m)**2 / (2*SIGMA_SONAR**2)) + K;
+        return likelihood
