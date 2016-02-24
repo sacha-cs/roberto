@@ -14,6 +14,9 @@ class Map:
     def get_walls(self):
         return self.walls
 
+    def get_wall_angle(self, wall):
+           return math.degrees(math.atan2(wall[3]-wall[1],wall[2]-wall[0]))
+
     def get_distance_to_wall(self, x, y, theta):
         m = float("inf")
         theta = math.radians(theta)
