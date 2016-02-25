@@ -1,4 +1,4 @@
-#!/usr/bin/env python 
+#!/usr/bin/env python
 
 import time
 import random
@@ -35,8 +35,10 @@ def travelToWaypoint(rotation, distance, particles, my_map):
         ru.turnLeft(rotation)
 
     particles.update_after_rotation(rotation)
+    print "Particles updated after rotation: ", particles.particles
 
-    for i in xrange(steps):
+    for i in xrange(int(steps)):
+        print "\n\nStep ", i
         ru.move(STEP_SIZE)
         measurement_update(STEP_SIZE, particles, my_map)
 
@@ -45,6 +47,8 @@ def travelToWaypoint(rotation, distance, particles, my_map):
 
 def measurement_update(distance, particles, my_map):
     particles.update_after_straight_line(distance)
+    # print "Particles updated after straight line: ", particles.particles
+
     pos = particles.get_position()
     m, incid_ang = my_map.get_distance_to_wall(pos[0], pos[1], pos[2])
     if (incid_ang <= ANGLE_LIMIT):
@@ -56,8 +60,10 @@ def measurement_update(distance, particles, my_map):
 
         z = ru.median(readings)
 
-        particles.weight_update(z, m)
+        particles.weight_update(z, 45)
+        # print "\nParticles weight updated: ", particles.particles
         particles.resample()
+        # print "\nParticles resampled: ", particles.particles
 
 if __name__ == '__main__':
     ru.start()
@@ -69,22 +75,24 @@ if __name__ == '__main__':
 
     init_pos = WAYPOINTS[0]
     particles = Particles(x=init_pos[0], y=init_pos[1], theta=0)
+    # print "Initial particles: ", particles.particles
 
     position = particles.get_position()
     canvas.draw_particles(particles)
 
-    #TODO: Frequency of sonar measurement querying
     for waypoint in WAYPOINTS[1:]:
-        # 1 - Motion prediction
+        # print "Position: ", position
         rotation = angleToPoint(position, waypoint)
         distance = euclideanDistance(position, waypoint)
+
 
         travelToWaypoint(rotation, distance, particles, my_map)
         canvas.draw_particles(particles)
 
-
         # 2 - Measurement update
         # TODO: get ground truth value m and incidence angle
+
+        position = particles.get_position()
 
 
     ru.done()
