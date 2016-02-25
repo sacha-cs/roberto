@@ -16,8 +16,8 @@ def calcTheta():
     return random.randint(0,360)
 
 class Particles:
-    def __init__(self, num=100, x=0, y=0, theta=0, sigma_e=1.5, \
-                    sigma_f=1.0, sigma_g=0.1):
+    def __init__(self, num=100, x=0, y=0, theta=0, sigma_e=0.07, \
+                    sigma_f=0.2, sigma_g=0.1):
         self.num_particles = num
         self.sigma_e = sigma_e
         self.sigma_f = sigma_f
@@ -70,45 +70,32 @@ class Particles:
         return self.particles
 
     def weight_update(self, z, m):
-        # print "\n\nWeight Update:"
-        # print "Before weight update: ", self.particles
         new_particles = []
         for p in self.particles:
-            # print "Old weight: ", p[3]
             new_weight = p[3] * self.__calculate_likelihood(z, m)
-            # print "New weight: ", new_weight
             new_particles.append((p[0], p[1], p[2], new_weight))
 
-        # print "After update and before normalising: ", new_particles
         self.particles = self.__normalise_particles(new_particles)
-        # print "After normalising: ", self.particles
 
     def resample(self):
-        # print "\n\nResample:"
         # Order particles by weight
         self.particles.sort(key=lambda p:p[3])
-        # print "Particles sorted: ", self.particles
         # Compute cumulative weight array
         weight_cdf = [0] * (self.num_particles+1)
         cumul = 0
         for i in xrange(0, self.num_particles):
             cumul += self.particles[i][3]
             weight_cdf[i+1] = cumul
-        # print "CDF: ", weight_cdf
 
         new_particles = []
         for _ in xrange(self.num_particles):
             rand_num = random.uniform(0,1)
-            # print "Random num : ", rand_num
 
             i = 0
             curr_max = 0
             while (curr_max < rand_num and i < self.num_particles):
-                # print "Curr max: ", curr_max
                 curr_max = weight_cdf[i+1]
                 i = i + 1
-
-            # print "Index : ", i
 
             new_particles.append(self.particles[i-1])
 
@@ -122,10 +109,6 @@ class Particles:
         return new_particles
 
     def __calculate_likelihood(self, z, m):
-        print "\nz : {}, m :{}\n".format(z, m)
         # Use Normal distributional model (s.d.: 2-3) to compute likelihood value (z-m)
-        print "-float(z-m)**2 : ", (-float(z-m)**2)
-        print "(2*self.SIGMA_SONAR**2) : ", (2*self.SIGMA_SONAR**2)
         likelihood = math.exp(-float(z-m)**2 / (2*self.SIGMA_SONAR**2)) + self.K
-        print "Likelihood: ", likelihood
         return likelihood

@@ -25,7 +25,7 @@ def add_walls(my_map):
     my_map.add_wall((210,84,210,0))     # g: G to H
     my_map.add_wall((210,0,0,0))        # h: H to O
 
-def travelToWaypoint(rotation, distance, particles, my_map):
+def travelToWaypoint(rotation, distance, particles, my_map, canvas):
     steps = distance // STEP_SIZE
     remainder = distance % STEP_SIZE
 
@@ -35,19 +35,18 @@ def travelToWaypoint(rotation, distance, particles, my_map):
         ru.turnLeft(rotation)
 
     particles.update_after_rotation(rotation)
-    print "Particles updated after rotation: ", particles.particles
 
     for i in xrange(int(steps)):
-        print "\n\nStep ", i
         ru.move(STEP_SIZE)
         measurement_update(STEP_SIZE, particles, my_map)
+        canvas.draw_particles(particles)
 
     ru.move(remainder)
     measurement_update(remainder, particles, my_map)
+    canvas.draw_particles(particles)
 
 def measurement_update(distance, particles, my_map):
     particles.update_after_straight_line(distance)
-    # print "Particles updated after straight line: ", particles.particles
 
     pos = particles.get_position()
     m, incid_ang = my_map.get_distance_to_wall(pos[0], pos[1], pos[2])
@@ -60,10 +59,8 @@ def measurement_update(distance, particles, my_map):
 
         z = ru.median(readings)
 
-        particles.weight_update(z, 45)
-        # print "\nParticles weight updated: ", particles.particles
+        particles.weight_update(z, m)
         particles.resample()
-        # print "\nParticles resampled: ", particles.particles
 
 if __name__ == '__main__':
     ru.start()
@@ -75,18 +72,14 @@ if __name__ == '__main__':
 
     init_pos = WAYPOINTS[0]
     particles = Particles(x=init_pos[0], y=init_pos[1], theta=0)
-    # print "Initial particles: ", particles.particles
 
     position = particles.get_position()
-    canvas.draw_particles(particles)
 
     for waypoint in WAYPOINTS[1:]:
-        # print "Position: ", position
         rotation = angleToPoint(position, waypoint)
         distance = euclideanDistance(position, waypoint)
 
-
-        travelToWaypoint(rotation, distance, particles, my_map)
+        travelToWaypoint(rotation, distance, particles, my_map, canvas)
         canvas.draw_particles(particles)
 
         # 2 - Measurement update
