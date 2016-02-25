@@ -16,8 +16,8 @@ def calcTheta():
     return random.randint(0,360)
 
 class Particles:
-    def __init__(self, num=100, x=0, y=0, theta=0, sigma_e=0.07, \
-                    sigma_f=0.2, sigma_g=0.1):
+    def __init__(self, num=100, x=0, y=0, theta=0, sigma_e=0.4, \
+                    sigma_f=0.6, sigma_g=0.1):
         self.num_particles = num
         self.sigma_e = sigma_e
         self.sigma_f = sigma_f
@@ -34,12 +34,12 @@ class Particles:
             self.particles.append((x, y, theta, w))
 
     # Computes mean (x, y, theta) of all particles
-    #TODO: Should take into account weight of particles
     def get_position(self):
-        x_arr = [x0 for (x0, _, _, _) in self.particles]
-        y_arr = [y0 for (_, y0, _, _) in self.particles]
-        theta_arr = [theta0 for (_, _, theta0, _) in self.particles]
-        return [mean(x_arr), mean(y_arr), mean(theta_arr)]
+        sum_weights = sum([w for (_,_,_,w) in self.particles])
+        x_arr = [x0*w for (x0, _, _, w) in self.particles]
+        y_arr = [y0*w for (_, y0, _, w) in self.particles]
+        theta_arr = [theta0*w for (_, _, theta0, w) in self.particles]
+        return [sum(x_arr)/sum_weights, sum(y_arr)/sum_weights, sum(theta_arr)/sum_weights]
 
     def update_after_straight_line(self, distance):
         self.particles = [self.__update_straight(x,y,theta,distance,w) for (x,y,theta,w) in self.particles]
@@ -75,17 +75,16 @@ class Particles:
             new_weight = p[3] * self.__calculate_likelihood(z, m)
             new_particles.append((p[0], p[1], p[2], new_weight))
 
-        self.particles = self.__normalise_particles(new_particles)
+        self.particles = new_particles
+        self.__normalise_particles()
 
     def resample(self):
-        # Order particles by weight
-        self.particles.sort(key=lambda p:p[3])
         # Compute cumulative weight array
-        weight_cdf = [0] * (self.num_particles+1)
+        weight_cdf = [0] * (self.num_particles)
         cumul = 0
         for i in xrange(0, self.num_particles):
             cumul += self.particles[i][3]
-            weight_cdf[i+1] = cumul
+            weight_cdf[i] = cumul
 
         new_particles = []
         for _ in xrange(self.num_particles):
@@ -94,19 +93,18 @@ class Particles:
             i = 0
             curr_max = 0
             while (curr_max < rand_num and i < self.num_particles):
-                curr_max = weight_cdf[i+1]
+                curr_max = weight_cdf[i]
                 i = i + 1
 
             new_particles.append(self.particles[i-1])
+        self.particles = [(x, y, theta, 1.0/self.num_particles) for (x, y, theta, _) in new_particles]
 
-        self.particles = new_particles
-
-    def __normalise_particles(self, particles):
-        sum_weights = sum([w for (_,_,_,w) in particles])
+    def __normalise_particles(self):
+        sum_weights = sum([w for (_,_,_,w) in self.particles])
         new_particles = []
-        for p in particles:
+        for p in self.particles:
             new_particles.append((p[0], p[1], p[2], p[3]/sum_weights))
-        return new_particles
+        self.particles = new_particles
 
     def __calculate_likelihood(self, z, m):
         # Use Normal distributional model (s.d.: 2-3) to compute likelihood value (z-m)

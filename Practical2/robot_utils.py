@@ -51,8 +51,8 @@ def setupMotors(control=CONTROL_ANGLE):
     motorParams.minPWM = 18.0
     motorParams.pidParameters.minOutput = -255
     motorParams.pidParameters.maxOutput = 255
-    motorParams.pidParameters.k_p = 0.6 * 700.0
-    motorParams.pidParameters.k_d = 15.75
+    motorParams.pidParameters.k_p = 400
+    motorParams.pidParameters.k_d = 0
     
     if(control == CONTROL_ANGLE):
         motorParams.pidParameters.k_i = 1000.0

@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python 
 
 import time
 import random
@@ -13,7 +13,7 @@ import Practical2.robot_utils as ru
 WAYPOINTS = [(84,30), (180,30), (180,54), (138,54), (138,168), \
                 (114,168), (114,84), (84,84), (84,30)]
 STEP_SIZE = 20
-ANGLE_LIMIT = 30
+ANGLE_LIMIT = 15
 
 def add_walls(my_map):
     my_map.add_wall((0,0,0,168))        # a: O to A
@@ -25,7 +25,10 @@ def add_walls(my_map):
     my_map.add_wall((210,84,210,0))     # g: G to H
     my_map.add_wall((210,0,0,0))        # h: H to O
 
-def travelToWaypoint(rotation, distance, particles, my_map, canvas):
+def travelToWaypoint(rotation, distance, particles, my_map):
+    steps = distance // STEP_SIZE
+    remainder = distance % STEP_SIZE
+
     if (rotation > 180):
         ru.turnRight(360 - rotation)
     else:
@@ -33,17 +36,15 @@ def travelToWaypoint(rotation, distance, particles, my_map, canvas):
 
     particles.update_after_rotation(rotation)
 
-    while distance > 0:
-        move_amount = min(STEP_SIZE, distance)
-        distance -= move_amount
-        ru.move(move_amount)
-        measurement_update(move_amount, particles, my_map, canvas)
-        canvas.draw_particles(particles)
+    for i in xrange(int(steps)):
+        ru.move(STEP_SIZE)
+        measurement_update(STEP_SIZE, particles, my_map)
+    
+    ru.move(remainder)
+    measurement_update(remainder, particles, my_map)
 
-def measurement_update(distance, particles, my_map, canvas):
+def measurement_update(distance, particles, my_map):
     particles.update_after_straight_line(distance)
-    canvas.draw_particles(particles)
-
     pos = particles.get_position()
     m, incid_ang = my_map.get_distance_to_wall(pos[0], pos[1], pos[2])
     if (incid_ang <= ANGLE_LIMIT):
@@ -51,40 +52,44 @@ def measurement_update(distance, particles, my_map, canvas):
         readings = []
         while (len(readings) < 5):
             usReading = ru.getUltrasonicSensor(2)
-            readings.append(usReading)
-            time.sleep(0.1)
+            readings.insert(0, usReading)
 
-        z = ru.median(readings) + 2
+        z = ru.median(readings)
+        print "z = ", z
+        print "m = ", m
 
         particles.weight_update(z, m)
-        canvas.draw_particles(particles)
-
         particles.resample()
-        canvas.draw_particles(particles)
 
 if __name__ == '__main__':
-    ru.start()
+    #ru.start()i
     canvas = Canvas()
 
     my_map = Map()
     add_walls(my_map)
-    canvas.draw_map(my_map)
 
-    init_pos = WAYPOINTS[0]
-    particles = Particles(x=init_pos[0], y=init_pos[1], theta=0)
+    print "Distance: ", my_map.get_distance_to_wall(114.03757539971585, 167.96543693886713, 540.1869889031709)
+    #canvas.draw_map(my_map)
 
-    position = particles.get_position()
+    #init_pos = WAYPOINTS[0]
+    #particles = Particles(x=init_pos[0], y=init_pos[1], theta=0)
 
-    for waypoint in WAYPOINTS[1:]:
-        rotation = angleToPoint(position, waypoint)
-        distance = euclideanDistance(position, waypoint)
+    #position = particles.get_position()
+    #canvas.draw_particles(particles)
 
-        travelToWaypoint(rotation, distance, particles, my_map, canvas)
-        #canvas.draw_particles(particles)
+    #for waypoint in WAYPOINTS[1:]:
+     #   # 1 - Motion prediction
+     #   print "Position: ", position
+     #   rotation = angleToPoint(position, waypoint)
+     #   distance = euclideanDistance(position, waypoint)
+
+     #   travelToWaypoint(rotation, distance, particles, my_map)
+     #   canvas.draw_particles(particles)
 
         # 2 - Measurement update
+        # TODO: get ground truth value m and incidence angle
+        
+    #    position = particles.get_position()
 
-        position = particles.get_position()
 
-
-    ru.done()
+    #ru.done()
