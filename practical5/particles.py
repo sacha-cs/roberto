@@ -17,7 +17,7 @@ def calcTheta():
 
 class Particles:
     def __init__(self, num=100, x=0, y=0, theta=0, sigma_e=0.4, \
-                    sigma_f=0.6, sigma_g=0.1):
+                    sigma_f=0.6, sigma_g=0.3):
         self.num_particles = num
         self.sigma_e = sigma_e
         self.sigma_f = sigma_f
@@ -69,10 +69,10 @@ class Particles:
     def get_particles(self):
         return self.particles
 
-    def weight_update(self, z, m):
+    def weight_update(self, z, map):
         new_particles = []
         for p in self.particles:
-            new_weight = p[3] * self.__calculate_likelihood(z, m)
+            new_weight = p[3] * self.__calculate_likelihood(p, z, map)
             new_particles.append((p[0], p[1], p[2], new_weight))
 
         self.particles = new_particles
@@ -106,7 +106,8 @@ class Particles:
             new_particles.append((p[0], p[1], p[2], p[3]/sum_weights))
         self.particles = new_particles
 
-    def __calculate_likelihood(self, z, m):
+    def __calculate_likelihood(self, p, z, map):
+        m, incidence = map.get_distance_to_wall(p[0], p[1], p[2])
         # Use Normal distributional model (s.d.: 2-3) to compute likelihood value (z-m)
-        likelihood = math.exp(-float(z-m)**2 / (2*self.SIGMA_SONAR**2)) + self.K
+        likelihood = math.exp(-float(z-m)**2 / (2.0*self.SIGMA_SONAR**2)) + self.K
         return likelihood

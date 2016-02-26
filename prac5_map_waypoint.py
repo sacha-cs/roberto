@@ -14,6 +14,7 @@ WAYPOINTS = [(84,30), (180,30), (180,54), (138,54), (138,168), \
                 (114,168), (114,84), (84,84), (84,30)]
 STEP_SIZE = 20
 ANGLE_LIMIT = 30
+US_SENSOR_OFFSET = 3
 
 def add_walls(my_map):
     my_map.add_wall((0,0,0,168))        # a: O to A
@@ -25,6 +26,12 @@ def add_walls(my_map):
     my_map.add_wall((210,84,210,0))     # g: G to H
     my_map.add_wall((210,0,0,0))        # h: H to O
 
+def draw_path(canvas):
+    for i in xrange(len(WAYPOINTS)-1):
+        start = WAYPOINTS[i]
+        end = WAYPOINTS[i+1]
+        canvas.draw_line((start[0], start[1], end[0], end[1]))
+
 def travelToWaypoint(rotation, distance, particles, my_map, canvas):
     if (rotation > 180):
         ru.turnRight(360 - rotation)
@@ -32,6 +39,7 @@ def travelToWaypoint(rotation, distance, particles, my_map, canvas):
         ru.turnLeft(rotation)
 
     particles.update_after_rotation(rotation)
+    update_particles_from_reading(particles, my_map, canvas)
 
     while distance > 0:
         move_amount = min(STEP_SIZE, distance)
@@ -43,24 +51,23 @@ def travelToWaypoint(rotation, distance, particles, my_map, canvas):
 def measurement_update(distance, particles, my_map, canvas):
     particles.update_after_straight_line(distance)
     canvas.draw_particles(particles)
+    update_particles_from_reading(particles, my_map, canvas)
 
-    pos = particles.get_position()
-    m, incid_ang = my_map.get_distance_to_wall(pos[0], pos[1], pos[2])
-    if (incid_ang <= ANGLE_LIMIT):
-        # Get z (sensor measurement)
-        readings = []
-        while (len(readings) < 5):
-            usReading = ru.getUltrasonicSensor(2)
-            readings.append(usReading)
-            time.sleep(0.1)
+def update_particles_from_reading(particles, my_map, canvas):
+    # Get z (sensor measurement)
+    readings = []
+    while (len(readings) < 5):
+        usReading = ru.getUltrasonicSensor(2)
+        readings.append(usReading)
+        time.sleep(0.1)
 
-        z = ru.median(readings) + 2
+    z = ru.median(readings) + US_SENSOR_OFFSET
 
-        particles.weight_update(z, m)
-        canvas.draw_particles(particles)
+    particles.weight_update(z, my_map)
+    canvas.draw_particles(particles)
 
-        particles.resample()
-        canvas.draw_particles(particles)
+    particles.resample()
+    canvas.draw_particles(particles)
 
 if __name__ == '__main__':
     ru.start()
@@ -70,9 +77,11 @@ if __name__ == '__main__':
     add_walls(my_map)
     canvas.draw_map(my_map)
 
+    draw_path(canvas)
+
     init_pos = WAYPOINTS[0]
     particles = Particles(x=init_pos[0], y=init_pos[1], theta=0)
-
+    canvas.draw_particles(particles)
     position = particles.get_position()
 
     for waypoint in WAYPOINTS[1:]:
