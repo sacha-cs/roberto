@@ -63,26 +63,26 @@ def setupMotors(control=CONTROL_ANGLE):
     interface.setMotorAngleControllerParameters(motors[1],motorParams)
 
 RADIANS_40CM = 11.67
-def move(distance, verbose=False, wait=True):
+def move(distance, verbose=False, wait=True, sleepAfter=True):
     radians = distance / 40.0 * RADIANS_40CM
     interface.increaseMotorAngleReferences(motors,[radians,radians])
     if (wait):
-        waitUntilStopped(verbose)
+        waitUntilStopped(verbose, sleepAfter)
 
 RADIANS_90DEG = 3.8
-def turnRight(deg, verbose=False, wait=True):
+def turnRight(deg, verbose=False, wait=True, sleepAfter=True):
     radians = deg/90.0 * RADIANS_90DEG
     interface.increaseMotorAngleReferences(motors,[radians,-radians])
     if wait:
-        waitUntilStopped(verbose)
+        waitUntilStopped(verbose, sleepAfter)
 
-def turnLeft(deg, verbose=False, wait=True):
+def turnLeft(deg, verbose=False, wait=True, sleepAfter=True):
     radians = deg/90.0 * RADIANS_90DEG
     interface.increaseMotorAngleReferences(motors,[-radians,radians])
     if wait:
-        waitUntilStopped(verbose)
+        waitUntilStopped(verbose, sleepAfter)
 
-def waitUntilStopped(verbose=False):
+def waitUntilStopped(verbose=False, sleepAfter=True):
     while not interface.motorAngleReferencesReached(motors):
         if(verbose):
             motorAngles = interface.getMotorAngles(motors)
@@ -92,7 +92,8 @@ def waitUntilStopped(verbose=False):
 
     if(verbose):
         print("Destination Reached!")
-    time.sleep(1)
+    if(sleepAfter):
+        time.sleep(1)
 
 def stop():
     interface.motorDisable(0)

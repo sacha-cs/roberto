@@ -1,6 +1,6 @@
 import math
 import random
-from utils import mean
+from utils import mean, gaussian
 
 # Functions to generate some dummy particles data:
 def calcX(t):
@@ -109,5 +109,5 @@ class Particles:
     def __calculate_likelihood(self, p, z, map):
         m, incidence = map.get_distance_to_wall(p[0], p[1], p[2])
         # Use Normal distributional model (s.d.: 2-3) to compute likelihood value (z-m)
-        likelihood = math.exp(-float(z-m)**2 / (2.0*self.SIGMA_SONAR**2)) + self.K
+        likelihood = gaussian(z, self.SIGMA_SONAR)(m) + self.K
         return likelihood
