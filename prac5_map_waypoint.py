@@ -32,21 +32,32 @@ def draw_path(canvas):
         end = WAYPOINTS[i+1]
         canvas.draw_line((start[0], start[1], end[0], end[1]))
 
-def travelToWaypoint(rotation, distance, particles, my_map, canvas):
+DISTANCE_EPSILON_SQUARED = 0.5
+def travelToWaypoint(waypoint, particles, my_map, canvas):
+    position = particles.get_position()
+    if(((position[0] - waypoint[0])**2 + (position[1] - waypoint[1])**2) < DISTANCE_EPSILON_SQUARED):
+        return
+
+    rotation = angleToPoint(position, waypoint)
+
     if (rotation > 180):
         ru.turnRight(360 - rotation)
     else:
         ru.turnLeft(rotation)
 
     particles.update_after_rotation(rotation)
+    
     update_particles_from_reading(particles, my_map, canvas)
 
-    while distance > 0:
-        move_amount = min(STEP_SIZE, distance)
-        distance -= move_amount
-        ru.move(move_amount)
-        measurement_update(move_amount, particles, my_map, canvas)
-        canvas.draw_particles(particles)
+    position = particles.get_position()
+    distance = euclideanDistance(position, waypoint)
+
+    move_amount = min(STEP_SIZE, distance)
+    distance -= move_amount
+    ru.move(move_amount)
+    measurement_update(move_amount, particles, my_map, canvas)
+    canvas.draw_particles(particles)
+    travelToWaypoint(waypoint, particles, my_map, canvas)
 
 def measurement_update(distance, particles, my_map, canvas):
     particles.update_after_straight_line(distance)
@@ -65,6 +76,8 @@ def update_particles_from_reading(particles, my_map, canvas):
 
     particles.weight_update(z, my_map)
     canvas.draw_particles(particles)
+
+    time.sleep(1)
 
     particles.resample()
     canvas.draw_particles(particles)
@@ -85,10 +98,7 @@ if __name__ == '__main__':
     position = particles.get_position()
 
     for waypoint in WAYPOINTS[1:]:
-        rotation = angleToPoint(position, waypoint)
-        distance = euclideanDistance(position, waypoint)
-
-        travelToWaypoint(rotation, distance, particles, my_map, canvas)
+        travelToWaypoint(waypoint, particles, my_map, canvas)
         #canvas.draw_particles(particles)
 
         # 2 - Measurement update
