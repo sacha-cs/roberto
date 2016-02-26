@@ -13,8 +13,8 @@ import Practical2.robot_utils as ru
 WAYPOINTS = [(84,30), (180,30), (180,54), (138,54), (138,168), \
                 (114,168), (114,84), (84,84), (84,30)]
 STEP_SIZE = 20
-ANGLE_LIMIT = 30
-US_SENSOR_OFFSET = 3
+US_SENSOR_OFFSET = 4
+DISTANCE_EPSILON = 2
 
 def add_walls(my_map):
     my_map.add_wall((0,0,0,168))        # a: O to A
@@ -32,10 +32,9 @@ def draw_path(canvas):
         end = WAYPOINTS[i+1]
         canvas.draw_line((start[0], start[1], end[0], end[1]))
 
-DISTANCE_EPSILON_SQUARED = 0.5
 def travelToWaypoint(waypoint, particles, my_map, canvas):
     position = particles.get_position()
-    if(((position[0] - waypoint[0])**2 + (position[1] - waypoint[1])**2) < DISTANCE_EPSILON_SQUARED):
+    if(euclideanDistance(position, waypoint) < DISTANCE_EPSILON):
         return
 
     rotation = angleToPoint(position, waypoint)
@@ -50,13 +49,14 @@ def travelToWaypoint(waypoint, particles, my_map, canvas):
     update_particles_from_reading(particles, my_map, canvas)
 
     position = particles.get_position()
+    
     distance = euclideanDistance(position, waypoint)
-
     move_amount = min(STEP_SIZE, distance)
-    distance -= move_amount
     ru.move(move_amount)
+    
     measurement_update(move_amount, particles, my_map, canvas)
     canvas.draw_particles(particles)
+    
     travelToWaypoint(waypoint, particles, my_map, canvas)
 
 def measurement_update(distance, particles, my_map, canvas):
@@ -70,14 +70,12 @@ def update_particles_from_reading(particles, my_map, canvas):
     while (len(readings) < 5):
         usReading = ru.getUltrasonicSensor(2)
         readings.append(usReading)
-        time.sleep(0.1)
+        time.sleep(0.05)
 
     z = ru.median(readings) + US_SENSOR_OFFSET
 
     particles.weight_update(z, my_map)
     canvas.draw_particles(particles)
-
-    time.sleep(1)
 
     particles.resample()
     canvas.draw_particles(particles)

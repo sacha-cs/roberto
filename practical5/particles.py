@@ -23,8 +23,8 @@ class Particles:
         self.sigma_f = sigma_f
         self.sigma_g = sigma_g
         self.MEAN = 0
-        self.SIGMA_SONAR = 3;
-        self.K = 0.1; #TODO
+        self.SIGMA_SONAR = 3
+        self.K = 0.1 
         self.particles = []
         self.__create_particles(x, y, theta)
 
