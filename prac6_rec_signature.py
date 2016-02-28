@@ -34,8 +34,8 @@ def recognize_location(signatures):
 
 def compare_signatures(ls1, ls2):
     dist = 0
-    for i in xrange(len(ls1.sig)):
-        dist += (ls1.sig[i] - ls2.sig[i])**2
+    for i in xrange(len(ls1.freq_sig)):
+        dist += (ls1.freq_sig[i] - ls2.freq_sig[i])**2
     return dist
 
 

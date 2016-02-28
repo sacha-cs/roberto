@@ -22,7 +22,7 @@ def learn_location(signatures):
     signatures.save(ls,idx)
     print "STATUS:  Location " + str(idx) + " learned and saved."
 
-# FILL IN: spin robot or sonar to capture a signature and store it in ls
+# spin robot or sonar to capture a signature and store it in ls
 def characterize_location(ls):
     num_rotations = len(ls.sig)
     deg = 360.0 / num_rotations
@@ -38,6 +38,7 @@ def characterize_location(ls):
         ru.rotateSensor(deg)
         print "Degrees: ", deg*i, " - Reading: ", ls.sig[i]
 
+    ls.compute_freq_hist()
     ru.rotateSensor(-360)
 
 if __name__ == '__main__':
