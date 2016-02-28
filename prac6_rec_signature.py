@@ -38,7 +38,6 @@ def compare_signatures(ls1, ls2):
         dist += (ls1.freq_sig[i] - ls2.freq_sig[i])**2
     return dist
 
-
 if __name__ == '__main__':
     ru.start()
 
