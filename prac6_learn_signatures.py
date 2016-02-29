@@ -1,7 +1,6 @@
 import Practical2.robot_utils as ru
 from practical6.signature_container import SignatureContainer
 from practical6.location_signature import LocationSignature
-from practical6.location_rec_utils import learn_location
 
 import time
 

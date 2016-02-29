@@ -3,6 +3,7 @@ from collections import Counter
 class LocationSignature:
     def __init__(self, deg_interval=3, interval=4):
         self.interval = interval
+        self.deg_interval = deg_interval
         self.sig = [0] * (360 / deg_interval)
         num_buckets = (255 / interval) + 1
         self.freq_sig = [0] * num_buckets

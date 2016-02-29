@@ -69,17 +69,18 @@ class SignatureContainer():
     # it returns an empty signature.
     def read(self, index):
         ls = LocationSignature()
-        filename = self.filenames_freq[index]
+        filename = self.filenames[index]
         if os.path.isfile(filename):
             f = open(filename, 'r')
-            for i in range(len(ls.freq_sig)):
+            for i in range(len(ls.sig)):
                 s = f.readline()
                 if (s != ''):
-                    ls.freq_sig[i] = int(float(s))
+                    ls.sig[i] = int(float(s))
             f.close();
         else:
             print "WARNING: Signature does not exist."
 
+        ls.compute_freq_hist()
         return ls
 
     # Testing stuff (Delete this afterwards)

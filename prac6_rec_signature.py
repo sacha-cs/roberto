@@ -24,18 +24,41 @@ def recognize_location(signatures):
         print "\nSTATUS:  Comparing signature " + str(idx) + " with the observed signature."
         sys.stdout.flush()
         ls_read = signatures.read(idx);
-        dist    = compare_signatures(ls_obs, ls_read)
+        dist = compare_signatures(ls_obs.freq_sig, ls_read.freq_sig)
         if (dist < smallestDist):
             smallestDist = dist
             rec_loc = idx
         print "Distance with location ", idx, " is ", dist
 
-    return rec_loc
+    rotation = determine_orientation(signatures, rec_loc, ls_obs)
 
-def compare_signatures(ls1, ls2):
+    return (rec_loc, rotation)
+
+
+def determine_orientation(signatures, loc_idx, ls_obs):
+    sav_sig = signatures.read(loc_idx).sig
+    test_sig = list(ls_obs.sig)
+
+    min_d_k = float("inf")
+    shift_val = -1
+
+    for i in xrange(360 / ls_obs.deg_interval):
+        # Shift signature 1 to the right
+        test_sig.insert(0, test_sig.pop())
+
+        d_k = compare_signatures(sav_sig, test_sig)
+
+        if (d_k < min_d_k):
+            min_d_k = d_k
+            shift_val = i+1
+
+    rotation = 360 - (shift_val * ls_obs.deg_interval)
+    return rotation
+
+def compare_signatures(sig1, sig2):
     dist = 0
-    for i in xrange(len(ls1.freq_sig)):
-        dist += (ls1.freq_sig[i] - ls2.freq_sig[i])**2
+    for i in xrange(len(sig1)):
+        dist += (sig1[i] - sig2[i])**2
     return dist
 
 if __name__ == '__main__':
@@ -43,7 +66,9 @@ if __name__ == '__main__':
 
     signatures = SignatureContainer()
     print "\nCollecting sonar measurements..."
-    rec_location = recognize_location(signatures)
-    print "Roberto is at waypoint: ", rec_location+1
+    rec_location, rotation = recognize_location(signatures)
+
+    print "\nRoberto is at waypoint: ", rec_location+1
+    print "Orientation: ", rotation
 
     ru.done()
