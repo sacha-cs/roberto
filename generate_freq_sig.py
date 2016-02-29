@@ -1,3 +1,7 @@
+### Debugging / Testing ###
+
+# Generate frequency data from depth measurements
+
 from practical6.signature_container import SignatureContainer  
 
 signatures = SignatureContainer()

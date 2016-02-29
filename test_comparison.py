@@ -1,5 +1,8 @@
+### Debugging / Testing ###
+
+# Given recorded measurements, compute frequency data then compare to waypoint data
+
 from practical6.signature_container import SignatureContainer
-from prac6_rec_signature import compare_signatures
 
 '''
 COMP_WAYPOINT = 2
@@ -17,12 +20,20 @@ dist = compare_signatures(ls1, ls2)
 print "Waypoint 3 - Waypoint ", COMP_WAYPOINT, " : ", dist
 '''
 
+def compare_signatures(ls1, ls2):
+    dist = 0
+    for i in xrange(len(ls1.freq_sig)):
+        dist += (ls1.freq_sig[i] - ls2.freq_sig[i])**2
+    return dist
+
+
 signatures = SignatureContainer()
 
-print "Measured Waypoint 1 90 degrees Left"
+print "Measured Waypoint 4 135 degrees Left"
 
-ls1 = signatures.read_file('wp1_90deg.dat')
+ls1 = signatures.read_file('wp4_135deg.dat')
 ls1.compute_freq_hist()
+print ls1.freq_sig
 
 for waypoint in xrange(1,6):
 	ls2 = signatures.read(waypoint-1)
