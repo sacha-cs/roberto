@@ -4,11 +4,11 @@ import time
 import random
 import math
 
-from practical5.particles import Particles
-from practical5.map import Map
-from practical5.canvas import Canvas
-from practical4.navigate import angleToPoint, euclideanDistance
-import Practical2.robot_utils as ru
+from particles import Particles
+from map import Map
+from canvas import Canvas
+from navigate import angleToPoint, euclideanDistance
+import robot_utils as ru
 
 WAYPOINTS = [(84,30), (180,30), (180,54), (138,54), (138,168), \
                 (114,168), (114,84), (84,84), (84,30)]

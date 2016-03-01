@@ -4,9 +4,9 @@ import time
 import random
 import math
 
-from practical5.particles import Particles
-from practical5.map import Map
-from practical5.canvas import Canvas
+from particles import Particles
+from map import Map
+from canvas import Canvas
 
 def add_walls(map):
     map.add_wall((0,0,0,168))        # a: O to A

@@ -1,5 +1,5 @@
-import Practical2.robot_utils as ru
-from practical5.canvas import Canvas
+import robot_utils as ru
+from canvas import Canvas
 import time
 import math
 
