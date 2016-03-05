@@ -3,6 +3,7 @@ from signature_container import SignatureContainer
 from location_signature import LocationSignature
 
 import time
+import math
 
 NUM_SIGNATURES = 5
 
@@ -23,22 +24,28 @@ def learn_location(signatures):
 
 # spin robot or sonar to capture a signature and store it in ls
 def characterize_location(ls):
-    num_rotations = len(ls.sig)
-    deg = 360.0 / num_rotations
+    deg = ls.deg_interval
+    ru.interface.setMotorRotationSpeedReference(ru.sensorMotor[0], 1)
+    lastPos = ru.interface.getMotorAngle(ru.sensorMotor[0])[0]
+    start = ru.interface.getMotorAngle(ru.sensorMotor[0])[0]
+    current = ru.interface.getMotorAngle(ru.sensorMotor[0])[0]
+    i = 0
+    while(lastPos < start + math.radians(360)):
 
-    for i in range(num_rotations):
-        readings = []
-        while (len(readings) < 5):
+        while(current < lastPos + math.radians(deg)):
+                current = ru.interface.getMotorAngle(ru.sensorMotor[0])[0]
+        lastPos += math.radians(deg)
+
+        reading = []
+        while (len(reading) < 5):
             usReading = ru.getUltrasonicSensor()
-            readings.append(usReading)
-            time.sleep(0.05)
-        ls.sig[i] = ru.median(readings)
-
-        ru.rotateSensor(deg)
-        print "Degrees: ", deg*i, " - Reading: ", ls.sig[i]
-
+            reading.append(usReading)
+        ls.sig[i] = ru.median(reading)
+        i += 1
+    ru.interface.setMotorRotationSpeedReference(ru.sensorMotor[0], 0.0)
     ls.compute_freq_hist()
-    ru.rotateSensor(-360)
+    # TODO: Use velocity control to go back 360 (NATPAT?? POR FAVOR -- Roberto)
+    ru.rotateSensor(-360, wait=False)
 
 if __name__ == '__main__':
     ru.start()
