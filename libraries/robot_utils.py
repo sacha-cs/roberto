@@ -75,7 +75,7 @@ def setupMotors(control=CONTROL_ANGLE):
     sensorMotorParams.pidParameters.maxOutput = 255
     sensorMotorParams.pidParameters.k_p = 50.0
     sensorMotorParams.pidParameters.k_i = 0.0
-    sensorMotorParams.pidParameters.k_d = 0
+    sensorMotorParams.pidParameters.k_d = 0.0
 
     interface.setMotorAngleControllerParameters(motors[0],motorParams)
     interface.setMotorAngleControllerParameters(motors[1],motorParams)
@@ -186,15 +186,6 @@ def angleToPoint(original, target):
     a = math.atan2(Ux,Uy) - math.atan2(Vx,Vy)
     return checkAngle(math.degrees(a))
 
-def travelToWaypoint(rotation, distance):
-    if (rotation > 180):
-        ru.turnRight(360 - rotation)
-    else:
-        ru.turnLeft(rotation)
-    ru.move(distance * 100)  # convert m to cm
-
-if __name__ == '__main__':
-    print getShortestPath(2)
 
 def done():
     interface.terminate()

@@ -77,10 +77,8 @@ def identify_location():
     print "\nRecognising location"
 
     rec_location, rotation, successful = recognize_location(signatures)
-    ru.rotateSensor(-360, wait=False)
     while (not successful):
         rec_location, rotation, successful = recognize_location(signatures)
-        ru.rotateSensor(-360, wait=False)
 
     return rec_location, rotation
 

@@ -44,8 +44,6 @@ def characterize_location(ls):
         i += 1
     ru.interface.setMotorRotationSpeedReference(ru.sensorMotor[0], 0.0)
     ls.compute_freq_hist()
-    # TODO: Use velocity control to go back 360 (NATPAT?? POR FAVOR -- Roberto)
-    ru.rotateSensor(-360, wait=False)
 
 if __name__ == '__main__':
     ru.start()

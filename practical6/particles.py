@@ -38,7 +38,7 @@ class Particles:
         print self.particles
 
     def update_after_recognition(self, theta):
-        self.particles = [self.__update_rotation_recog(x,y,theta,w) for (x,y,theta,w) in self.particles]
+        self.particles = [self.__update_rotation_recog(x,y,theta,w) for (x,y,_,w) in self.particles]
 
     def __update_rotation_recog(self, x, y, theta, w):
         theta_new = theta + self.__get_noise_term(self.sigma_h)
