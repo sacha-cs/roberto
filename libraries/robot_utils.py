@@ -52,7 +52,7 @@ def setupMotors(control=CONTROL_ANGLE):
     # motor parameters values for wheel motors
     motorParams = interface.MotorAngleControllerParameters()
     motorParams.maxRotationAcceleration = 7.5
-    motorParams.maxRotationSpeed = 11.5
+    motorParams.maxRotationSpeed = 15.0
     motorParams.feedForwardGain = 255/20.0
     motorParams.minPWM = 18.0
     motorParams.pidParameters.minOutput = -255

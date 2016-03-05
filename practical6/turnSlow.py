@@ -4,7 +4,7 @@ import time
 
 
 def turnSlow():
-    ru.interface.setMotorRotationSpeedReference(3, 1)
+    ru.interface.setMotorRotationSpeedReference(3, 2)
     lastPos = ru.interface.getMotorAngle(3)[0]
     start = ru.interface.getMotorAngle(3)[0]
     current = ru.interface.getMotorAngle(3)[0]

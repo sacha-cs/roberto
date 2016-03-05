@@ -87,7 +87,7 @@ def identify_location():
 if __name__ == '__main__':
     ru.start()
 
-    rec_location, rotation = rec_location()
+    rec_location, rotation = identify_location()
 
     print "\nRoberto is at waypoint: ", rec_location+1
     print "Orientation: ", rotation

@@ -25,7 +25,7 @@ def learn_location(signatures):
 # spin robot or sonar to capture a signature and store it in ls
 def characterize_location(ls):
     deg = ls.deg_interval
-    ru.interface.setMotorRotationSpeedReference(ru.sensorMotor[0], 1)
+    ru.interface.setMotorRotationSpeedReference(ru.sensorMotor[0], 2)
     lastPos = ru.interface.getMotorAngle(ru.sensorMotor[0])[0]
     start = ru.interface.getMotorAngle(ru.sensorMotor[0])[0]
     current = ru.interface.getMotorAngle(ru.sensorMotor[0])[0]

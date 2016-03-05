@@ -100,7 +100,7 @@ if __name__ == '__main__':
     print "\nRoberto is at waypoint ", rec_location+1, " orientation ", orientation
 
     particles = Particles(x=init_pos[0], y=init_pos[1], theta=0)
-    particles.update_after_rotation()
+    particles.update_after_recognition(orientation)
     canvas.draw_particles(particles)
 
     waypoints = ru.getShortestPath(rec_location)
