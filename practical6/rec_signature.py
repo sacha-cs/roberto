@@ -1,7 +1,7 @@
-import Practical2.robot_utils as ru
+import robot_utils as ru
 from prac6_learn_signatures import characterize_location
-from practical6.location_signature import LocationSignature
-from practical6.signature_container import SignatureContainer
+from location_signature import LocationSignature
+from signature_container import SignatureContainer
 
 import sys
 

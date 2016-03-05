@@ -4,7 +4,7 @@ import time
 CONTROL_ANGLE = 0
 CONTROL_VELOCITY = 1
 
-interface = brickpi.Interface()
+interface = None
 motors = [0,1]
 sensorMotor = [3]
 sensorPort = 2
@@ -33,13 +33,13 @@ def mode(l):
     return num
 
 def start(control=CONTROL_ANGLE):
+    global interface;
+    interface = brickpi.Interface()
     interface.initialize()
     setupMotors(control)
     setupSensors()
 
 def setupSensors():
-    interface.sensorEnable(0, brickpi.SensorType.SENSOR_TOUCH)
-    interface.sensorEnable(1, brickpi.SensorType.SENSOR_TOUCH)
     interface.sensorEnable(2, brickpi.SensorType.SENSOR_ULTRASONIC)
 
 def setupMotors(control=CONTROL_ANGLE):
@@ -66,14 +66,14 @@ def setupMotors(control=CONTROL_ANGLE):
     # motor parameters values for sensor motor
     sensorMotorParams = interface.MotorAngleControllerParameters()
     sensorMotorParams.maxRotationAcceleration = 7.5
-    sensorMotorParams.maxRotationSpeed = 11.0
+    sensorMotorParams.maxRotationSpeed = 3.0
     sensorMotorParams.feedForwardGain = 255/20.0
-    sensorMotorParams.minPWM = 18.0
+    sensorMotorParams.minPWM = 0.0
     sensorMotorParams.pidParameters.minOutput = -255
     sensorMotorParams.pidParameters.maxOutput = 255
-    sensorMotorParams.pidParameters.k_p = 0.6 * 700.0
-    sensorMotorParams.pidParameters.k_i = 100.0
-    sensorMotorParams.pidParameters.k_d = 15.75
+    sensorMotorParams.pidParameters.k_p = 50
+    sensorMotorParams.pidParameters.k_i = 0
+    sensorMotorParams.pidParameters.k_d = 0
 
     interface.setMotorAngleControllerParameters(motors[0],motorParams)
     interface.setMotorAngleControllerParameters(motors[1],motorParams)
@@ -135,12 +135,23 @@ def getTouchSensor(port):
     print "Error: couldn't get touch sensor result for port " + str(port)
     return False
 
+def getUltrasonicMedian(port=sensorPort, values=5, sleepTime=0.05):
+    readings = []
+    for _ in xrange(values):
+        readings.append(getUltrasonicSensor())
+        time.sleep(sleepTime)
+    print(readings)
+    return median(readings)
+        
+
 #TODO: multithread this to get a median value of the last n results
 def getUltrasonicSensor(port=sensorPort):
     usReading = interface.getSensorValue(port)
-    if usReading:
+
+    if usReading :
         return usReading[0]
-    print "Couldn't get reading from US sensor"
+    else:
+        print "Failed US reading"
     return 255
 
 def done():
