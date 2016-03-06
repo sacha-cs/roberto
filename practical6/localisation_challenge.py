@@ -29,7 +29,11 @@ def draw_path(canvas):
     for i in xrange(len(WAYPOINTS)-1):
         start = WAYPOINTS[i]
         end = WAYPOINTS[i+1]
+        if(i == 0):
+            lastPoint = WAYPOINTS[len(WAYPOINTS)-1]
+            canvas.draw_line((start[0], start[1], lastPoint[0], lastPoint[1]))
         canvas.draw_line((start[0], start[1], end[0], end[1]))
+
 
 def turnToWaypoint(waypoint, particles, my_map, canvas):
     position = particles.get_position()

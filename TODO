@@ -1,0 +1,8 @@
+Use velocity control(?) to speed up sonar's motor
+Increase degree interval to 5+ degrees
+Histogram for WP 2 and 3 will therefore be hard to distinguish:
+	Need to determine an 'epsilon' value for if the difference between any two WPs is small
+	Compare depth measurements for those waypoints
+Increasing degree interval will decrease orientation precision
+	Use techniques from practical5 to determine orientation using sonar reading against wall
+	By using the estimated orientation to determine the facing wall

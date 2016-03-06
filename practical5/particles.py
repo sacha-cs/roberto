@@ -17,15 +17,14 @@ def calcTheta():
 
 class Particles:
     def __init__(self, num=100, x=0, y=0, theta=0, sigma_e=0.4, \
-                    sigma_f=0.6, sigma_g=0.3, sigma_h=6):
+                    sigma_f=0.6, sigma_g=0.3):
         self.num_particles = num
         self.sigma_e = sigma_e
         self.sigma_f = sigma_f
         self.sigma_g = sigma_g
-        self.sigma_h = sigma_h
         self.MEAN = 0
         self.SIGMA_SONAR = 3
-        self.K = 0.1
+        self.K = 0.1 
         self.particles = []
         self.__create_particles(x, y, theta)
 
@@ -33,16 +32,6 @@ class Particles:
         w = 1.0 / self.num_particles
         for i in range(self.num_particles):
             self.particles.append((x, y, theta, w))
-
-        self.update_after_recognition(theta)
-        print self.particles
-
-    def update_after_recognition(self, theta):
-        self.particles = [self.__update_rotation_recog(x,y,theta,w) for (x,y,_,w) in self.particles]
-
-    def __update_rotation_recog(self, x, y, theta, w):
-        theta_new = theta + self.__get_noise_term(self.sigma_h)
-        return (x, y, theta_new, w)
 
     # Computes mean (x, y, theta) of all particles
     def get_position(self):

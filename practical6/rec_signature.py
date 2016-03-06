@@ -22,24 +22,24 @@ def recognize_location(signatures):
     # Compare ls_read with ls_obs and find the best match
     smallestDist = float("inf")
     rec_loc = -1
-    distances = []
+    # distances = []
     for idx in range(signatures.size):
         print "\nSTATUS:  Comparing signature " + str(idx) + " with the observed signature."
         sys.stdout.flush()
         ls_read = signatures.read(idx);
         dist = compare_signatures(ls_obs.freq_sig, ls_read.freq_sig)
-        distances.append(dist)
+        # distances.append(dist)
         if (dist < smallestDist):
             smallestDist = dist
             rec_loc = idx
         print "Distance with location ", idx, " is ", dist
 
-    print distances
-    for d in distances:
-        if (d != smallestDist):
-            diff = abs(smallestDist - d)
-            if diff <= DIFF_THRESHOLD:
-                return (-1, -1, False)
+    # print distances
+    # for d in distances:
+    #     if (d != smallestDist):
+    #         diff = abs(smallestDist - d)
+    #         if diff <= DIFF_THRESHOLD:
+    #             return (-1, -1, False)
 
     rotation = determine_orientation(signatures, rec_loc, ls_obs)
 
@@ -77,8 +77,8 @@ def identify_location():
     print "\nRecognising location"
 
     rec_location, rotation, successful = recognize_location(signatures)
-    while (not successful):
-        rec_location, rotation, successful = recognize_location(signatures)
+    # while (not successful):
+    #     rec_location, rotation, successful = recognize_location(signatures)
 
     return rec_location, rotation
 

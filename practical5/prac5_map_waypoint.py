@@ -7,7 +7,7 @@ import math
 from particles import Particles
 from map import Map
 from canvas import Canvas
-from navigate import angleToPoint, euclideanDistance
+from robot_utils import angleToPoint, euclideanDistance
 import robot_utils as ru
 
 WAYPOINTS = [(84,30), (180,30), (180,54), (138,54), (138,168), \
@@ -43,7 +43,7 @@ def turnToWaypoint(waypoint, particles, my_map, canvas):
         ru.turnLeft(rotation)
 
     particles.update_after_rotation(rotation)
-    
+
     update_particles_from_reading(particles, my_map, canvas)
 
 def travelToWaypoint(waypoint, particles, my_map, canvas):
@@ -54,14 +54,14 @@ def travelToWaypoint(waypoint, particles, my_map, canvas):
     turnToWaypoint(waypoint, particles, my_map, canvas)
 
     position = particles.get_position()
-    
+
     distance = euclideanDistance(position, waypoint)
     move_amount = min(STEP_SIZE, distance)
     ru.move(move_amount)
-    
+
     measurement_update(move_amount, particles, my_map, canvas)
     canvas.draw_particles(particles)
-    
+
     travelToWaypoint(waypoint, particles, my_map, canvas)
 
 def measurement_update(distance, particles, my_map, canvas):

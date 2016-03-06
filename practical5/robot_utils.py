@@ -52,7 +52,7 @@ def setupMotors(control=CONTROL_ANGLE):
     # motor parameters values for wheel motors
     motorParams = interface.MotorAngleControllerParameters()
     motorParams.maxRotationAcceleration = 7.5
-    motorParams.maxRotationSpeed = 11.5
+    motorParams.maxRotationSpeed = 15.0
     motorParams.feedForwardGain = 255/20.0
     motorParams.minPWM = 18.0
     motorParams.pidParameters.minOutput = -255
@@ -75,7 +75,7 @@ def setupMotors(control=CONTROL_ANGLE):
     sensorMotorParams.pidParameters.maxOutput = 255
     sensorMotorParams.pidParameters.k_p = 50.0
     sensorMotorParams.pidParameters.k_i = 0.0
-    sensorMotorParams.pidParameters.k_d = 0
+    sensorMotorParams.pidParameters.k_d = 0.0
 
     interface.setMotorAngleControllerParameters(motors[0],motorParams)
     interface.setMotorAngleControllerParameters(motors[1],motorParams)
@@ -102,7 +102,7 @@ def turnLeft(deg, verbose=False, wait=True, sleepAfter=True):
     if wait:
         waitUntilStopped(verbose, sleepAfter)
 
-RADIANS_90DEG_SENSOR = 1.58
+RADIANS_90DEG_SENSOR = 1.63
 def rotateSensor(deg, verbose=False, wait=True, sleepAfter=True):
     radians = deg / 90.0 * RADIANS_90DEG_SENSOR
     interface.increaseMotorAngleReferences(sensorMotor, [radians])
@@ -186,15 +186,6 @@ def angleToPoint(original, target):
     a = math.atan2(Ux,Uy) - math.atan2(Vx,Vy)
     return checkAngle(math.degrees(a))
 
-def travelToWaypoint(rotation, distance):
-    if (rotation > 180):
-        ru.turnRight(360 - rotation)
-    else:
-        ru.turnLeft(rotation)
-    ru.move(distance * 100)  # convert m to cm
-
-if __name__ == '__main__':
-    print getShortestPath(2)
 
 def done():
     interface.terminate()
