@@ -10,7 +10,7 @@ NUM_SIGNATURES = 5
 # This function characterizes the current location, and stores the obtained
 # signature into the next available file.
 def learn_location(signatures, num_sig=5):
-    avg_ls = LocationSignature()
+    med_ls = LocationSignature()
     list_ls = []
 
     for _ in xrange(num_sig):
@@ -18,6 +18,7 @@ def learn_location(signatures, num_sig=5):
         ls = LocationSignature()
         characterize_location(ls)
         list_ls.append(ls)
+        print ls.sig
     idx = signatures.get_free_index();
     if (idx == -1): # run out of signature files
         print "\nWARNING:"
@@ -26,14 +27,14 @@ def learn_location(signatures, num_sig=5):
         return
 
     # compute the average of the location signatures
-    for i in xrange(len(avg_ls.sig)):
-        curr = 0
+    for i in xrange(len(med_ls.sig)):
+        curr = []
         for j in xrange(num_sig):
-            curr += list_ls[j].sig[i]
-        avg_ls.sig[i] = int(curr / float(num_sig))
+            curr.append(list_ls[j].sig[i])
+        med_ls.sig[i] = ru.median(curr)
 
-    avg_ls.compute_freq_hist()
-    signatures.save(avg_ls,idx)
+    med_ls.compute_freq_hist()
+    signatures.save(med_ls,idx)
     print "STATUS:  Location " + str(idx) + " learned and saved."
 
 # spin robot or sonar to capture a signature and store it in ls
