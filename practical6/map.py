@@ -1,6 +1,9 @@
 # A Map class containing walls
 import math
 
+# Precision for comparing floats
+PREC = 6
+
 class Map:
     def __init__(self):
         self.walls = [];
@@ -53,8 +56,8 @@ class Map:
                 # check hit point is actually on a wall!
                 hit_x = x + dist * math.cos(theta)
                 hit_y = y + dist * math.sin(theta)
-                if (hit_x >= min(Ax, Bx) and hit_x <= max(Ax, Bx) and 
-                    hit_y >= min(Ay, By) and hit_y <= max(Ay, By)):
+                if (round(hit_x,PREC) >= round(min(Ax, Bx),PREC) and round(hit_x,PREC) <= round(max(Ax, Bx),PREC) and 
+                    round(hit_y,PREC) >= round(min(Ay, By),PREC) and round(hit_y,PREC) <= round(max(Ay, By),PREC)):
                     m = dist
                     wall_angle = self.get_incidence_angle(wall, math.degrees(theta))
         return m, wall_angle
