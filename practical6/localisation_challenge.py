@@ -122,6 +122,9 @@ if __name__ == '__main__':
     
     ultrasonic.updateOrentation(orientation)
 
+    while True:
+        time.sleep(0.1)
+
     particles = Particles(x=init_pos[0], y=init_pos[1], theta=0)
     particles.update_after_recognition(orientation)
     canvas.draw_particles(particles)
