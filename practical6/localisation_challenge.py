@@ -78,10 +78,16 @@ def travelToWaypoint(waypoint, particles, my_map, canvas):
         angles = ru.interface.getMotorAngles(ru.motors)
         radians = ((angles[0][0] - startAngles[0][0]) + 
                    (angles[1][0] - startAngles[1][0]))/2;
-        distance = radians / ru.RADIANS_40CM * 40.0
-        measurement_update(distance, reading, get_angle_diff(orentation, position[2]), particles, my_map, canvas)
+        travelled = radians / ru.RADIANS_40CM * 40.0
+        measurement_update(travelled, reading, get_angle_diff(orentation, position[2]), particles, my_map, canvas)
         position = particles.get_position()
         canvas.draw_particles(particles)
+        distanceLeft = distance - travelled
+        estimatedEnd = (position[0] + math.cos(math.radians(position[2])) * distanceLeft,
+                        position[1] + math.sin(math.radians(position[2])) * distanceLeft, 
+                        position[2])
+        if(euclideanDistance(estimatedEnd, waypoint) > DISTANCE_EPSILON)):
+            travelToWaypoint(waypoint, particles, my_map, canvas)
 
     travelToWaypoint(waypoint, particles, my_map, canvas)
 
@@ -92,9 +98,7 @@ def measurement_update(distance, reading, orentation, particles, my_map, canvas)
 def update_particles_from_reading(particles, reading, orentation, my_map, canvas):
     z = reading + US_SENSOR_OFFSET
 
-    particles.weight_update(z,  my_map)
-    canvas.draw_particles(particles)
-
+    particles.weight_update(z, orentation,  my_map)
     particles.resample()
     canvas.draw_particles(particles)
 
