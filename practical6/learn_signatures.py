@@ -9,16 +9,9 @@ NUM_SIGNATURES = 5
 
 # This function characterizes the current location, and stores the obtained
 # signature into the next available file.
-def learn_location(signatures, num_sig=5):
-    med_ls = LocationSignature()
-    list_ls = []
-
-    for _ in xrange(num_sig):
-        raw_input("\nReady for next scan for same location?")
-        ls = LocationSignature()
-        characterize_location(ls)
-        list_ls.append(ls)
-        print ls.sig
+def learn_location(signatures):
+    ls = LocationSignature()
+    characterize_location(ls)
     idx = signatures.get_free_index();
     if (idx == -1): # run out of signature files
         print "\nWARNING:"
@@ -26,21 +19,13 @@ def learn_location(signatures, num_sig=5):
         print "Please remove some loc_%%.dat files.\n"
         return
 
-    # compute the average of the location signatures
-    for i in xrange(len(med_ls.sig)):
-        curr = []
-        for j in xrange(num_sig):
-            curr.append(list_ls[j].sig[i])
-        med_ls.sig[i] = ru.median(curr)
-
-    med_ls.compute_freq_hist()
-    signatures.save(med_ls,idx)
+    signatures.save(ls,idx)
     print "STATUS:  Location " + str(idx) + " learned and saved."
 
 # spin robot or sonar to capture a signature and store it in ls
 def characterize_location(ls):
     deg = ls.deg_interval
-    ru.interface.setMotorRotationSpeedReference(ru.sensorMotor[0], 1.5)
+    ru.interface.setMotorRotationSpeedReference(ru.sensorMotor[0], 2)
     lastPos = ru.interface.getMotorAngle(ru.sensorMotor[0])[0]
     start = ru.interface.getMotorAngle(ru.sensorMotor[0])[0]
     current = ru.interface.getMotorAngle(ru.sensorMotor[0])[0]
@@ -58,9 +43,10 @@ def characterize_location(ls):
         ls.sig[i] = ru.median(reading)
         i += 1
     ru.interface.setMotorPwm(ru.sensorMotor[0], 0)
-
-    # TODO: why is this line now making Roberto go wild?
+    
+    # NOTE: why does this line not work anymore?
     # ru.interface.setMotorRotationSpeedReference(ru.sensorMotor[0], 0.0)
+    ls.compute_freq_hist()
 
 if __name__ == '__main__':
     ru.start()
