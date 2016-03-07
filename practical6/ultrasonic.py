@@ -56,6 +56,11 @@ def getOpposite(pos):
     if pos == LEFT: return RIGHT;
     if pos == RIGHT: return LEFT;
 
+def toDegrees(rads):
+    if(rads < 0):
+        rads += 2 * math.pi
+    return math.degrees(rads)
+
 def main():
     resultsQueue = threading.Queue()
     orentationLock = threading.Lock()
@@ -90,6 +95,6 @@ def main():
             continue
 
         reading = ru.getUltrasonicMedian(values=3)
-        resultsQueue.put((reading, getAngleFor(dest)))
+        resultsQueue.put((reading, toDegrees(getAngleFor(dest))))
 
         dest = getOpposite(dest)
