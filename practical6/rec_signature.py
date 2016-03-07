@@ -29,17 +29,17 @@ def recognize_location(signatures):
         ls_read = signatures.read(idx);
         dist = compare_signatures(ls_obs.freq_sig, ls_read.freq_sig)
         print "Distance with location ", idx, " is ", dist
-        dists.append({sig:idx, dist:dist})
+        dists.append({'sig':idx, 'dist':dist})
 
     dists = sorted(dists, key=lambda x: x['dist'])
  
-    rotation0, min_d_k0 = determine_orientation(signatures.read(dists[0].sig).sig, ls_obs)
-    rotation1, min_d_k1 = determine_orientation(signatures.read(dists[1].sig).sig, ls_obs)
+    rotation0, min_d_k0 = determine_orientation(signatures.read(dists[0]['sig']).sig, ls_obs)
+    rotation1, min_d_k1 = determine_orientation(signatures.read(dists[1]['sig']).sig, ls_obs)
 
     if (min_d_k0 < min_d_k1): 
-        return (dists[0].sig, rotation0, True)
+        return (dists[0]['sig'], rotation0, True)
     else:
-        return (dists[1].sig, rotation1, True)
+        return (dists[1]['sig'], rotation1, True)
 
 
 
