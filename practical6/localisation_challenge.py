@@ -73,7 +73,7 @@ def travelToWaypoint(waypoint, particles, my_map, canvas):
     startAngles = ru.interface.getMotorAngles(ru.motors)
     ru.move(distance, wait=False)
 
-    while not interface.motorAngleReferencesReached(ru.motors):
+    while not ru.interface.motorAngleReferencesReached(ru.motors):
         (reading, orentation) = ultrasonic.resultsQueue.get()
         angles = ru.interface.getMotorAngles(ru.motors)
         radians = ((angles[0][0] - startAngles[0][0]) + 
@@ -86,7 +86,7 @@ def travelToWaypoint(waypoint, particles, my_map, canvas):
         estimatedEnd = (position[0] + math.cos(math.radians(position[2])) * distanceLeft,
                         position[1] + math.sin(math.radians(position[2])) * distanceLeft, 
                         position[2])
-        if(euclideanDistance(estimatedEnd, waypoint) > DISTANCE_EPSILON)):
+        if(ru.euclideanDistance(estimatedEnd, waypoint) > DISTANCE_EPSILON):
             travelToWaypoint(waypoint, particles, my_map, canvas)
 
     travelToWaypoint(waypoint, particles, my_map, canvas)
@@ -120,7 +120,7 @@ if __name__ == '__main__':
 
     print "\nRoberto is at waypoint ", rec_location+1, " orientation ", orientation
     
-    usThread.updateOrentation(orentation)
+    ultrasonic.updateOrentation(orientation)
 
     particles = Particles(x=init_pos[0], y=init_pos[1], theta=0)
     particles.update_after_recognition(orientation)

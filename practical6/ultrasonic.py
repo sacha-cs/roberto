@@ -1,14 +1,15 @@
 import robot_utils as ru
 import math
 import threading
+from Queue import Queue
+import time
 
-orentation = None
-orentationChanged = False
-orentationLock = None
+orientation = None
+orientationChanged = False
 rotating = False
-rotatingLock = None
-
-resultsQueue = None
+resultsQueue = Queue()
+orientationLock = threading.Lock()
+rotatingLock = threading.Lock()
 
 LEFT = 1
 RIGHT = -1
@@ -25,32 +26,38 @@ def fixAngle(angle):
     return angle
 
 def updateOrentation(o):
-    with orentationLock:
-        orentation = fixAngle(diff)
-        orentationChanged = True
+    global orientation, orientationChanged
+    with orientationLock:
+        orientation = fixAngle(o)
+        orientationChanged = True
     
 def setRotating(r):
+    global rotating
     with rotatingLock:
         rotating = r
 
 def getAngleFor(pos):
-    quadrant = orentation/(math.pi/2)
+    quadrant = orientation/(math.pi/2)
     if(pos == LEFT):
-        return fixAngle(max(math.floor(quadrant), math.ceil(quadrant)) * math.pi/2 - orentation)
+        return fixAngle(max(math.floor(quadrant), math.ceil(quadrant)) * math.pi/2 - orientation)
     if(pos == RIGHT):
-        return fixAngle(min(math.floor(quadrant), math.ceil(quadrant)) * math.pi/2 - orentation)
+        return fixAngle(min(math.floor(quadrant), math.ceil(quadrant)) * math.pi/2 - orientation)
 
 def getClosest():
     currentRotation = fixAngle(ru.interface.getMotorAngle(ru.sensorMotor[0])[0])
     left = diffAngle(currentRotation, getAngleFor(LEFT))
     right = diffAngle(currentRotation, getAngleFor(RIGHT))
 
-    return abs(left) < abs(right) ? LEFT : RIGHT
+    if(abs(left) < abs(right)): return LEFT
+    else: return RIGHT
 
 def rotateTo(pos):
-    currentRotation = fixAngle(ru.interface.getMotorAngle(ru.sensorMotor[0])[0])
+    currentRotation = ru.interface.getMotorAngle(ru.sensorMotor[0])[0]
+    print "current: ", currentRotation
     diff = diffAngle(currentRotation, getAngleFor(pos))
+    print "to turn: ", diff
     ru.rotateSensor(math.degrees(diff), wait=False)
+    return diff + currentRotation
 
 def getOpposite(pos):
     if pos == LEFT: return RIGHT;
@@ -62,39 +69,47 @@ def toDegrees(rads):
     return math.degrees(rads)
 
 def main():
-    resultsQueue = threading.Queue()
-    orentationLock = threading.Lock()
+    global orientation, orientationChanged, rotating, resultsQueue, orientationLock, rotatingLock
     while True:
-        with orentationLock:
-            if not orentation == None:
+        with orientationLock:
+            if not orientation == None:
+                orientationChanged = False
                 break
-        time.sleep(0.1)
+        print "No orientation"
+        time.sleep(1)
     
+    dest = getClosest()
     while True:
-        rotateTo(dest)
-        while not ru.interface.motorAngleReferenceReached(ru.sensorMotor[0]):
+        to = rotateTo(dest)
+        while abs(ru.interface.getMotorAngle(ru.sensorMotor[0])[0] - to) < 0.001:
             needToRestart = False
-            with orentationLock:
-                if(orentationChanged):
-                    orentationChanged = False
+            with orientationLock:
+                if(orientationChanged):
+                    orientationChanged = False
                     needToRestart = True
             if(needToRestart):
+                print "Restarting before getting there"
                 dest = getClosest()
-                continue
+                to = rotateTo(dest)
+                print ru.interface.getMotorAngle(ru.sensorMotor[0])[0], to
 
         needToRestart = False
         while True:
             with rotatingLock:
                 if not rotating:
+                    print "Not rotating!"
                     break;
                 else:
                     needToRestart = True
 
         if(needToRestart):
+            print "Restarting because we rotated"
             dest = getClosest()
             continue
 
+        print "Getting a reading!"
         reading = ru.getUltrasonicMedian(values=3)
+        print "Got a reading!"
         resultsQueue.put((reading, toDegrees(getAngleFor(dest))))
 
         dest = getOpposite(dest)
