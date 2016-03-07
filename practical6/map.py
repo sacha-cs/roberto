@@ -41,6 +41,8 @@ class Map:
         wall_angle = None
 
         theta = math.radians(theta)
+        while theta > 2 * math.pi: theta -= 2*math.pi
+        while theta < 0: theta += 2*math.pi
 
         for wall in self.walls:
             Ax, Ay, Bx, By = self.get_wall_parts(wall)
