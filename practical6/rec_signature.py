@@ -33,14 +33,19 @@ def recognize_location(signatures):
 
     dists = sorted(dists, key=lambda x: x['dist'])
  
-    rotation0, min_d_k0 = determine_orientation(signatures.read(dists[0]['sig']).sig, ls_obs)
-    rotation1, min_d_k1 = determine_orientation(signatures.read(dists[1]['sig']).sig, ls_obs)
+    THRESHOLD = 150
+    if (abs(dists[0]['dist'] - dists[1]['dist']) < THRESHOLD):
 
-    if (min_d_k0 < min_d_k1): 
-        return (dists[0]['sig'], rotation0, True)
+        rotation0, min_d_k0 = determine_orientation(signatures.read(dists[0]['sig']).sig, ls_obs)
+        rotation1, min_d_k1 = determine_orientation(signatures.read(dists[1]['sig']).sig, ls_obs)
+
+        if (min_d_k0 < min_d_k1): 
+            return (dists[0]['sig'], rotation0, True)
+        else:
+            return (dists[1]['sig'], rotation1, True)
     else:
-        return (dists[1]['sig'], rotation1, True)
-
+        rotation, _ = determine_orientation(signatures.read(dists[0]['sig']).sig, ls_obs)
+        return (dists[0]['sig'], rotation, True)
 
 
 def determine_orientation(sav_sig, ls_obs):
