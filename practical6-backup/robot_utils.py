@@ -122,8 +122,6 @@ def waitUntilStopped(verbose=False, sleepAfter=True, motors=[0,1]):
 
     if(verbose):
         print("Destination Reached!")
-    if(sleepAfter):
-        time.sleep(1)
 
 def stop():
     interface.motorDisable(0)

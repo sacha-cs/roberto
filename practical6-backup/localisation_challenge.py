@@ -11,7 +11,7 @@ import robot_utils as ru
 from rec_signature import identify_location
 
 WAYPOINTS = [(84,30), (180,30), (180,54), (138,54), (138,168)]
-STEP_SIZE = 20
+STEP_SIZE = 30
 US_SENSOR_OFFSET = 3.5
 DISTANCE_EPSILON = 3.0
 
@@ -39,6 +39,9 @@ def turnToWaypoint(waypoint, particles, my_map, canvas):
     position = particles.get_position()
 
     rotation = ru.angleToPoint(position, waypoint)
+
+    if(abs(rotation) < 5):
+        return
 
     if (rotation > 180):
         ru.turnRight(360 - rotation)
@@ -69,7 +72,6 @@ def travelToWaypoint(waypoint, particles, my_map, canvas):
 
 def measurement_update(distance, particles, my_map, canvas):
     particles.update_after_straight_line(distance)
-    canvas.draw_particles(particles)
     update_particles_from_reading(particles, my_map, canvas)
 
 def update_particles_from_reading(particles, my_map, canvas):
@@ -83,8 +85,6 @@ def update_particles_from_reading(particles, my_map, canvas):
     z = ru.median(readings) + US_SENSOR_OFFSET
 
     particles.weight_update(z, my_map)
-    canvas.draw_particles(particles)
-
     particles.resample()
     canvas.draw_particles(particles)
 
