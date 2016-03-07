@@ -80,10 +80,10 @@ class Particles:
     def get_particles(self):
         return self.particles
 
-    def weight_update(self, z, map):
+    def weight_update(self, z, angle, map):
         new_particles = []
         for p in self.particles:
-            new_weight = p[3] * self.__calculate_likelihood(p, z, map)
+            new_weight = p[3] * self.__calculate_likelihood(p, z, angle, map)
             new_particles.append((p[0], p[1], p[2], new_weight))
 
         self.particles = new_particles
@@ -117,8 +117,8 @@ class Particles:
             new_particles.append((p[0], p[1], p[2], p[3]/sum_weights))
         self.particles = new_particles
 
-    def __calculate_likelihood(self, p, z, map):
-        m, incidence = map.get_distance_to_wall(p[0], p[1], p[2])
+    def __calculate_likelihood(self, p, z, angle, map):
+        m, incidence = map.get_distance_to_wall(p[0], p[1], p[2] + angle)
         # Use Normal distributional model (s.d.: 2-3) to compute likelihood value (z-m)
         likelihood = gaussian(z, self.SIGMA_SONAR)(m) + self.K
         return likelihood

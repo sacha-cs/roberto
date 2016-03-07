@@ -9,11 +9,20 @@ from map import Map
 from canvas import Canvas
 import robot_utils as ru
 from rec_signature import identify_location
+import ultrasonic
+
+import threading
 
 WAYPOINTS = [(84,30), (180,30), (180,54), (138,54), (138,168)]
 STEP_SIZE = 20
 US_SENSOR_OFFSET = 3.5
 DISTANCE_EPSILON = 3.0
+
+def get_angle_diff(a1, a2):
+    diff = a1 - a2
+    while diff < 0: diff += 360
+    while diff > 360: diff -= 360
+    return diff
 
 def add_walls(my_map):
     my_map.add_wall((0,0,0,168))        # a: O to A
@@ -47,42 +56,43 @@ def turnToWaypoint(waypoint, particles, my_map, canvas):
 
     particles.update_after_rotation(rotation)
 
-    update_particles_from_reading(particles, my_map, canvas)
+    #update_particles_from_reading(particles, my_map, canvas)
 
 def travelToWaypoint(waypoint, particles, my_map, canvas):
     position = particles.get_position()
     if(ru.euclideanDistance(position, waypoint) < DISTANCE_EPSILON):
         return
 
+    ultrasonic.setRotating(True)
     turnToWaypoint(waypoint, particles, my_map, canvas)
+    ultrasonic.setRotating(False)
 
     position = particles.get_position()
 
     distance = ru.euclideanDistance(position, waypoint)
-    move_amount = min(STEP_SIZE, distance)
-    ru.move(move_amount)
+    startAngles = ru.interface.getMotorAngles(ru.motors)
+    ru.move(distance, wait=False)
 
-    measurement_update(move_amount, particles, my_map, canvas)
-    canvas.draw_particles(particles)
+    while not interface.motorAngleReferencesReached(ru.motors):
+        (reading, orentation) = ultrasonic.resultsQueue.get()
+        angles = ru.interface.getMotorAngles(ru.motors)
+        radians = ((angles[0][0] - startAngles[0][0]) + 
+                   (angles[1][0] - startAngles[1][0]))/2;
+        distance = radians / ru.RADIANS_40CM * 40.0
+        measurement_update(distance, reading, get_angle_diff(orentation, position[2]), particles, my_map, canvas)
+        position = particles.get_position()
+        canvas.draw_particles(particles)
 
     travelToWaypoint(waypoint, particles, my_map, canvas)
 
-def measurement_update(distance, particles, my_map, canvas):
+def measurement_update(distance, reading, orentation, particles, my_map, canvas):
     particles.update_after_straight_line(distance)
-    canvas.draw_particles(particles)
-    update_particles_from_reading(particles, my_map, canvas)
+    update_particles_from_reading(particles, reading, orentation, my_map, canvas)
 
-def update_particles_from_reading(particles, my_map, canvas):
-    # Get z (sensor measurement)
-    readings = []
-    while (len(readings) < 5):
-        usReading = ru.getUltrasonicSensor(2)
-        readings.append(usReading)
-        time.sleep(0.05)
+def update_particles_from_reading(particles, reading, orentation, my_map, canvas):
+    z = reading + US_SENSOR_OFFSET
 
-    z = ru.median(readings) + US_SENSOR_OFFSET
-
-    particles.weight_update(z, my_map)
+    particles.weight_update(z,  my_map)
     canvas.draw_particles(particles)
 
     particles.resample()
@@ -98,10 +108,15 @@ if __name__ == '__main__':
 
     draw_path(canvas)
 
+    usThread = threading.Thread(target=ultrasonic.main)
+    usThread.start()
+
     rec_location, orientation = identify_location()
     init_pos = WAYPOINTS[rec_location]
 
     print "\nRoberto is at waypoint ", rec_location+1, " orientation ", orientation
+    
+    usThread.updateOrentation(orentation)
 
     particles = Particles(x=init_pos[0], y=init_pos[1], theta=0)
     particles.update_after_recognition(orientation)
