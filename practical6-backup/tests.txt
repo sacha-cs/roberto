@@ -1,0 +1,61 @@
+Roberto is at waypoint:  5
+Orientation:  0
+
+Roberto is at waypoint:  5
+Orientation:  90
+
+Roberto is at waypoint:  5
+Orientation:  177
+
+Roberto is at waypoint:  5
+Orientation:  267
+
+
+Roberto is at waypoint:  4
+Orientation:  357
+
+Roberto is at waypoint:  4
+Orientation:  273
+
+Roberto is at waypoint:  4
+Orientation:  183
+
+Roberto is at waypoint:  4
+Orientation:  273
+
+Roberto is at waypoint:  3
+Orientation:  3
+
+
+# WRONG
+Roberto is at waypoint:  2
+Orientation:  255
+
+Roberto is at waypoint:  2
+Orientation:  258
+
+Roberto is at waypoint:  2
+Orientation:  171
+
+Roberto is at waypoint:  2
+Orientation:  162
+# END WRONG
+
+
+Roberto is at waypoint:  3
+Orientation:  87
+
+Roberto is at waypoint:  2
+Orientation:  0
+
+Roberto is at waypoint:  2
+Orientation:  84
+
+
+Roberto is at waypoint:  2
+Orientation:  171
+
+Roberto is at waypoint:  1
+Orientation:  9
+
+
