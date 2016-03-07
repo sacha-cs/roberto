@@ -1,0 +1,70 @@
+Hist comparison: Sum Square Differences
+Angle interval: 3 degree
+
+### Depth interval: 5cm ###
+
+## At Waypoint 2 ##
+
+Comp WP 3: 436
+Comp WP 2: 54
+
+## At Waypoint 3 ##
+
+Comp WP 3: 180
+Comp WP 2: 364
+
+
+### Depth interval: 4cm ### 
+
+## At Waypoint 2 ##
+
+Comp WP 3: 588
+Comp WP 2: 56
+
+### At Waypoint 3 ###
+
+Comp WP 3: 132
+Comp WP 2: 730
+
+
+###  Depth interval: 3cm ###
+
+## At Waypoint 2 ##
+
+Comp WP 3: 346
+Comp WP 2: 86
+
+
+## At Waypoint 3 ##
+
+Comp WP 3: 160
+Comp WP 2: 432
+
+
+###  Depth interval: 2cm ###
+
+## At Waypoint 2 ##
+
+Comp WP 3: 498
+Comp WP 2: 58
+
+
+## At Waypoint 3 ##
+
+Comp WP 3: 146
+Comp WP 2: 618
+
+
+###  Depth interval: 1cm ###
+
+## At Waypoint 2 ##
+
+Comp WP 3: 686
+Comp WP 2: 90
+
+
+## At Waypoint 3 ##
+
+Comp WP 3: 148
+Comp WP 2: 692
+
